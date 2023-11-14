@@ -18,8 +18,6 @@ import androidx.compose.foundation.lazy.items
 fun HomeScreen(
     vm: RhythMixViewModel
 ) {
-//lazy column use items
-    //List songTitles = vm.getSongs()
     LazyColumn(
         content = { items(getSongs()) {
             Card(
@@ -39,17 +37,7 @@ fun HomeScreen(
         }
     )
 
-//            Card(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(10.dp)
-//                    .clickable {
-//                       //TODO
-//                    }
-//            ) {
-//                Text("Song")
-//            }
-//        }
+
     }
 
 

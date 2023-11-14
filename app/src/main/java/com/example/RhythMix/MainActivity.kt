@@ -1,15 +1,21 @@
 package com.example.RhythMix
 
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import com.example.RhythMix.ui.theme.RhythMixTheme
+import android.Manifest
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +31,21 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    private fun requestPermissions(){
+        val hasRecordedPermission = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if(!hasRecordedPermission){
+            val requestPermissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestPermission()) { permitted: Boolean ->
+                if (!permitted) {
+                    Toast.makeText(this, "You need to give permission to record", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+
     }
 }
 
