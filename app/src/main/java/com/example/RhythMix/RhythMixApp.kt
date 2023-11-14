@@ -19,11 +19,17 @@ import com.example.RhythMix.screens.EditScreen
 import com.example.RhythMix.screens.HomeScreen
 import com.example.RhythMix.screens.RecordScreen
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -78,6 +84,31 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RhythMixTopBar() {
+    TopAppBar(
+        title = {
+            Text("RythMix")
+                
+        },
+        actions = {
+            IconButton(
+                onClick = { /* Handle icon click */ }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Create"
+                )
+            }
+            IconButton(
+                onClick = { /* Handle icon click */ }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete"
+                )
+            }
+        }
+
+    )
 }
 
 @Composable
