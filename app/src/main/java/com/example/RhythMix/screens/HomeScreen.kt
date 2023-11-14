@@ -1,8 +1,10 @@
 package com.example.RhythMix.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -13,44 +15,22 @@ import androidx.compose.ui.unit.dp
 import com.example.RhythMix.RhythMixViewModel
 import com.example.RhythMix.getSongs
 import androidx.compose.foundation.lazy.items
+import com.example.RhythMix.Modifiers
+import com.example.RhythMix.TrackCard
 
 @Composable
 fun HomeScreen(
-    vm: RhythMixViewModel
+    vm: RhythMixViewModel,
+    modifier: Modifier
 ) {
 //lazy column use items
     //List songTitles = vm.getSongs()
     LazyColumn(
-        content = { items(getSongs()) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .clickable {
-                       //TODO
-                    }
-            ) {
-                Text(it.title)
-            }
-
-
-        }
-
+        content = {
+            items(getSongs()) { TrackCard(sound = it, modifier = modifier, vm = vm)}
         }
     )
-
-//            Card(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(10.dp)
-//                    .clickable {
-//                       //TODO
-//                    }
-//            ) {
-//                Text("Song")
-//            }
-//        }
-    }
+}
 
 
 @Composable
