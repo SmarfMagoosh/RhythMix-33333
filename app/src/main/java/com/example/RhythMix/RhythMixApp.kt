@@ -2,8 +2,10 @@ package com.example.RhythMix
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
@@ -24,6 +26,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.RhythMix.classes.Sound
 
 enum class Screens(@StringRes val title: Int) {
     Home(R.string.home),
@@ -69,10 +73,10 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
-                HomeScreen(vm = vm)
+                HomeScreen(vm = vm, modifier = modifier)
             }
             composable(route = Screens.Edit.name) {
-                EditScreen(vm = vm)
+                EditScreen(vm = vm, modifier = modifier)
             }
             composable(route = Screens.Record.name) {
                 RecordScreen(vm = vm)
@@ -112,11 +116,7 @@ fun RhythMixTopBar() {
 }
 
 @Composable
-fun RhythMixBottomBar(
-    modifier: Modifier,
-    homeClick: () -> Unit,
-    editClick: () -> Unit,
-    recordClick: () -> Unit) {
+fun RhythMixBottomBar(modifier: Modifier, homeClick: () -> Unit, editClick: () -> Unit, recordClick: () -> Unit) {
     BottomAppBar{
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -146,6 +146,22 @@ fun RhythMixBottomBar(
                     imageVector = Icons.Filled.PlayArrow,
                     contentDescription = "Record")
             }
+        }
+    }
+}
+
+@Composable
+fun TrackCard(sound: Sound, modifier: Modifier, vm: RhythMixViewModel) {
+    Card(
+        modifier = Modifiers.cardModifier
+    ) {
+        Column(
+            modifier = modifier.fillMaxHeight().padding(20.dp)
+        ) {
+            Text(
+                text = sound.title
+            )
+            // TODO: Play button and things?
         }
     }
 }
