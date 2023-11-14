@@ -1,4 +1,4 @@
-package com.example.rhythmix.ui.theme
+package com.example.RhythMix.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

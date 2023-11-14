@@ -1,4 +1,4 @@
-package com.example.rhythmix
+package com.example.RhythMix
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
