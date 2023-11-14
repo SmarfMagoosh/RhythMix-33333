@@ -7,5 +7,5 @@ import com.example.RhythMix.RhythMixViewModel
 fun HomeScreen(
     vm: RhythMixViewModel
 ) {
-    // TODO :(
+
 }

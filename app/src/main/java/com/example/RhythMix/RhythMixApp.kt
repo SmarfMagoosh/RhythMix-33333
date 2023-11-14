@@ -1,11 +1,16 @@
 package com.example.RhythMix
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,7 +18,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.RhythMix.screens.EditScreen
 import com.example.RhythMix.screens.HomeScreen
 import com.example.RhythMix.screens.RecordScreen
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 enum class Screens(@StringRes val title: Int) {
     Home(R.string.home),
@@ -26,9 +39,24 @@ enum class Screens(@StringRes val title: Int) {
 fun RhythMixApp(modifier: Modifier = Modifier) {
     val vm = RhythMixViewModel()
     val navController = rememberNavController()
+    val prevVisits by navController.currentBackStackEntryAsState()
+    val currentScreen = Screens.valueOf(prevVisits?.destination?.route?: Screens.Home.name)
     Scaffold(
         topBar = { RhythMixTopBar() },
-        bottomBar = { RhythMixBottomBar() },
+        bottomBar = { RhythMixBottomBar(
+            modifier = modifier,
+            homeClick = {
+                navController.navigate(Screens.Home.name)
+                // TODO: Change icon color
+            },
+            editClick = {
+                navController.navigate(Screens.Edit.name)
+                // TODO: Change icon color
+            },
+            recordClick = {
+                navController.navigate(Screens.Record.name)
+                // TODO: Change icon color
+            }) },
         modifier = modifier) {
         NavHost(
             navController = navController,
@@ -37,7 +65,6 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
             composable(route = Screens.Home.name) {
                 HomeScreen(vm = vm)
             }
-
             composable(route = Screens.Edit.name) {
                 EditScreen(vm = vm)
             }
@@ -48,14 +75,46 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RhythMixTopBar() {
-
 }
 
 @Composable
-fun RhythMixBottomBar() {
-    BottomAppBar {
-
+fun RhythMixBottomBar(
+    modifier: Modifier,
+    homeClick: () -> Unit,
+    editClick: () -> Unit,
+    recordClick: () -> Unit) {
+    BottomAppBar{
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 50.dp)
+        ) {
+            IconButton(
+                modifier = modifier,
+                onClick = homeClick) {
+                Icon(
+                    imageVector = Icons.Filled.Home,
+                    contentDescription = "Home")
+            }
+            IconButton(
+                modifier = modifier,
+                onClick = editClick) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "Edit")
+            }
+            IconButton(
+                modifier = modifier,
+                onClick = recordClick) {
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    contentDescription = "Record")
+            }
+        }
     }
 }
