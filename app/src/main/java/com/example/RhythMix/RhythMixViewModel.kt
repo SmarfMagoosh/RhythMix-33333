@@ -2,6 +2,7 @@ package com.example.RhythMix
 
 import androidx.lifecycle.ViewModel
 import com.example.RhythMix.classes.Song
+import com.example.RhythMix.classes.Track
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -23,6 +24,13 @@ fun getSongs(): List<Song> = listOf(
     Song("The Immigrant Song"),
     Song("Head in the Ceiling Fan"),
     Song("Not the Same Anymore")
+)
+
+fun getTracks(): List<Track> = listOf(
+    Track("The Sickest Riff"),
+    Track("Bass"),
+    Track("Vocals"),
+    Track("anotha one")
 )
 
 class RhythMixViewModel: ViewModel() {
