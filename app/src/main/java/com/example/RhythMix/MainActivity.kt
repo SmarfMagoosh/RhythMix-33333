@@ -19,6 +19,8 @@ import com.example.RhythMix.screens.AudioManager
 
 
 class MainActivity : ComponentActivity() {
+   // var audioManager: AudioManager = AudioManager(this)
+   private val audioManager: AudioManager by lazy { AudioManager(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -28,12 +30,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RhythMixApp()
+                    RhythMixApp(modifier = Modifier, audioManager)
                 }
             }
         }
         requestPermissions()
-        var audioManager: AudioManager = AudioManager(this)
+
     }
     private fun requestPermissions(){
         val hasRecordedPermission = ContextCompat.checkSelfPermission(
@@ -55,5 +57,5 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    RhythMixApp()
+  //  RhythMixApp()
 }

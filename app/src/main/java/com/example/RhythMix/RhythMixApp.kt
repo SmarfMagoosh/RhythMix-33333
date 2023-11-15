@@ -37,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.RhythMix.classes.Sound
+import com.example.RhythMix.screens.AudioManager
 
 enum class Screens(@StringRes val title: Int) {
     Home(R.string.home),
@@ -46,7 +47,7 @@ enum class Screens(@StringRes val title: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RhythMixApp(modifier: Modifier = Modifier) {
+fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
     val vm = RhythMixViewModel()
     val navController = rememberNavController()
     val prevVisits by navController.currentBackStackEntryAsState()
@@ -79,7 +80,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
                 EditScreen(vm = vm, modifier = modifier)
             }
             composable(route = Screens.Record.name) {
-                RecordScreen(vm = vm)
+                RecordScreen(vm = vm, audioManager)
             }
         }
     }

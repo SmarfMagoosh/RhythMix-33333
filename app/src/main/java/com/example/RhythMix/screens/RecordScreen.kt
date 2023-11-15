@@ -7,6 +7,13 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import com.example.RhythMix.RhythMixViewModel
 import androidx.compose.material3.Text
@@ -17,25 +24,40 @@ import java.io.IOException
 
 @Composable
 fun RecordScreen(
-    vm: RhythMixViewModel
+    vm: RhythMixViewModel,  audioManager: AudioManager
 ) {
     Text("Record Audio")
-
+    IconButton(
+        onClick = { audioManager.startRecording(1)}
+    ) {
+        Icon(
+            imageVector = Icons.Default.Check,
+            contentDescription = "play"
+        )
+    }
+    IconButton(
+        onClick = { /* Handle icon click */ }
+    ) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "play"
+        )
+    }
 }
 
 class AudioManager(private val context: Context){
 
     var mediaRecorder: MediaRecorder? = null
-    var mediaPlayer: MediaPlayer? = null
+
+    //use Evan's media player
+    //var mediaPlayer: MediaPlayer? = null
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             mediaRecorder = MediaRecorder(context)
         }
-        mediaPlayer = MediaPlayer()
+       // mediaPlayer = MediaPlayer()
     }
-
-    // Initialize MediaPlayer
 
 
     //get filepath using their id for a saved song
@@ -79,21 +101,21 @@ class AudioManager(private val context: Context){
         mediaRecorder = null
     }
 
-    fun startPlayback(id: Int): Boolean{
-        val path = filepathId(id)
-        if(File(path).exists()){
-            mediaPlayer = MediaPlayer()
-            mediaPlayer?.setDataSource(path)
-            mediaPlayer?.prepare()
-            mediaPlayer?.start()
-            return true
-        }
-        return false
-    }
-
-    fun stopPlayback(){
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
-        mediaPlayer = null
-    }
+//    fun startPlayback(id: Int): Boolean{
+//        val path = filepathId(id)
+//        if(File(path).exists()){
+//            mediaPlayer = MediaPlayer()
+//            mediaPlayer?.setDataSource(path)
+//            mediaPlayer?.prepare()
+//            mediaPlayer?.start()
+//            return true
+//        }
+//        return false
+//    }
+//
+//    fun stopPlayback(){
+//        mediaPlayer?.stop()
+//        mediaPlayer?.release()
+//        mediaPlayer = null
+//    }
 }
