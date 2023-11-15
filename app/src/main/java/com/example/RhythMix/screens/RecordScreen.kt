@@ -27,22 +27,22 @@ fun RecordScreen(
     vm: RhythMixViewModel,  audioManager: AudioManager
 ) {
     Text("Record Audio")
-    IconButton(
-        onClick = { audioManager.startRecording(1)}
-    ) {
-        Icon(
-            imageVector = Icons.Default.Check,
-            contentDescription = "play"
-        )
-    }
-    IconButton(
-        onClick = { /* Handle icon click */ }
-    ) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = "play"
-        )
-    }
+//    IconButton(
+//        onClick = { audioManager.startRecording(1)}
+//    ) {
+//        Icon(
+//            imageVector = Icons.Default.Check,
+//            contentDescription = "play"
+//        )
+//    }
+//    IconButton(
+//        onClick = { /* Handle icon click */ }
+//    ) {
+//        Icon(
+//            imageVector = Icons.Default.Close,
+//            contentDescription = "play"
+//        )
+//    }
 }
 
 class AudioManager(private val context: Context){
@@ -69,6 +69,7 @@ class AudioManager(private val context: Context){
         if(context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)){
             mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 MediaRecorder(context)
+
             }else{
                 @Suppress("DEPRECATION")
                 (MediaRecorder())
@@ -88,7 +89,7 @@ class AudioManager(private val context: Context){
             //start recording
             mediaRecorder?.prepare()
             mediaRecorder?.start()
-
+            Log.e(TAG, "starting recording")
             return true
         }else{
             return false
@@ -96,9 +97,13 @@ class AudioManager(private val context: Context){
     }
 
     fun stopRecording(){
-        mediaRecorder?.stop()
-        mediaRecorder?.release()
-        mediaRecorder = null
+        try {
+            mediaRecorder?.stop()
+            mediaRecorder?.release()
+            mediaRecorder = null
+        } catch (e: Exception) {
+        Log.e(TAG, "Error on stop recording: ${e.message}")
+    }
     }
 
 //    fun startPlayback(id: Int): Boolean{
