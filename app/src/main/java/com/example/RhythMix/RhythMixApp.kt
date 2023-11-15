@@ -215,7 +215,7 @@ fun TrackCard(
             Row(
                 modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+               // horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(
                     onClick = {
@@ -228,23 +228,9 @@ fun TrackCard(
                         imageVector = Icons.Filled.PlayArrow,
                         contentDescription = "Play")
                 }
-//                IconButton(
-//                    onClick = {
-//                        if (mp.isPlaying) {
-//                            mp.pause()
-//                        }
-//                    }) {
-//                    Icon(
-//                        imageVector = Icons.Filled.Close,
-//                        contentDescription = "Play"
-//                    )
-//
-//                }
+
                 ClickableImage(mp)
-//                Image(
-//                    painter = painterResource(id = R.drawable.pausebutton),
-//                    contentDescription = null
-//                )
+
             }
         }
     }
