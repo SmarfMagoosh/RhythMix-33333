@@ -1,10 +1,13 @@
 package com.example.RhythMix
 
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,15 +29,16 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.sharp.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.RhythMix.classes.Sound
 
@@ -44,6 +48,7 @@ enum class Screens(@StringRes val title: Int) {
     Record(R.string.record)
 }
 
+@RequiresApi(34)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RhythMixApp(modifier: Modifier = Modifier) {
@@ -151,17 +156,42 @@ fun RhythMixBottomBar(modifier: Modifier, homeClick: () -> Unit, editClick: () -
 }
 
 @Composable
-fun TrackCard(sound: Sound, modifier: Modifier, vm: RhythMixViewModel) {
-    Card(
-        modifier = Modifiers.cardModifier
-    ) {
-        Column(
-            modifier = modifier.fillMaxHeight().padding(20.dp)
-        ) {
-            Text(
-                text = sound.title
-            )
-            // TODO: Play button and things?
+fun TrackCard(
+    sound: Sound,
+    modifier: Modifier,
+    vm: RhythMixViewModel,
+    mp: MediaPlayer,
+    ctx: Context = LocalContext.current) {
+    Card(modifier = Modifiers.cardModifier) {
+        Column(modifier = modifier.fillMaxHeight().padding(20.dp)) {
+            Text(sound.title)
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                IconButton(
+                    onClick = {
+                        mp.reset()
+                        mp.setDataSource(ctx.resources.openRawResourceFd(sound.file))
+                        mp.prepare()
+                        mp.start()
+                    }) {
+                    Icon(
+                        imageVector = Icons.Filled.PlayArrow,
+                        contentDescription = "Play")
+                }
+                IconButton(
+                    onClick = {
+                        if (mp.isPlaying) {
+                            mp.pause()
+                        }
+                    }) {
+                    Icon(
+                        imageVector = Icons.Sharp.Warning,
+                        contentDescription = "Pause")
+                }
+            }
         }
     }
 }

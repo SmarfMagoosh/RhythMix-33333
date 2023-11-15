@@ -25,29 +25,24 @@ object Modifiers {
 }
 
 fun getSongs(): List<Song> = listOf(
-    Song("Reptilia", mutableListOf(), null),
-    Song("Yellow", mutableListOf(), null),
-    Song("Everglow", mutableListOf(), null),
-    Song("Let it go", mutableListOf(), null),
-    Song("Black Betty", mutableListOf(), null),
-    Song("Mississippi Queen", mutableListOf(), null),
-    Song("All Along the Watchtower", mutableListOf(), null),
-    Song("The Final Countdown", mutableListOf(), null),
-    Song("The Immigrant Song", mutableListOf(), null),
-    Song("Head in the Ceiling Fan", mutableListOf(), null),
-    Song("Not the Same Anymore", mutableListOf(), null)
+    Song("Reptilia", mutableListOf(), R.raw.reptilia),
+    Song("Yellow", mutableListOf(), R.raw.yellow),
+    Song("Black Betty", mutableListOf(), R.raw.black_betty),
+    Song("Mississippi Queen", mutableListOf(), R.raw.mississippi_queen),
+    Song("Head in the Ceiling Fan", mutableListOf(), R.raw.head_in_the_cieling_fan),
+    Song("Not the Same Anymore", mutableListOf(), R.raw.not_the_same_anymore)
 )
 
 fun getTracks(): List<Track> = listOf(
-    Track("The Sickest Riff", null),
-    Track("Bass", null),
-    Track("Vocals", null),
-    Track("anotha one", null)
+    Track("The Sickest Riff Known to Mankind", 0),
+    Track("Bass", 0),
+    Track("Vocals", 0),
+    Track("Saxophone Solo that Goes Crazy", 0),
+    Track("Vine Boom Sound Effect", 0)
 )
 
 class RhythMixViewModel: ViewModel() {
     private var _state = MutableStateFlow( State() )
     val state = _state.asStateFlow()
-
     // TODO
 }
