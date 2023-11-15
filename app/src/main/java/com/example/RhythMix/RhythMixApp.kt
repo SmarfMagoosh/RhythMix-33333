@@ -5,12 +5,15 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -25,15 +28,12 @@ import com.example.RhythMix.screens.HomeScreen
 import com.example.RhythMix.screens.RecordScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.sharp.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,9 +41,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+
 import com.example.RhythMix.classes.Sound
 import com.example.RhythMix.screens.AudioManager
 
@@ -206,7 +208,9 @@ fun TrackCard(
     mp: MediaPlayer,
     ctx: Context = LocalContext.current) {
     Card(modifier = Modifiers.cardModifier) {
-        Column(modifier = modifier.fillMaxHeight().padding(20.dp)) {
+        Column(modifier = modifier
+            .fillMaxHeight()
+            .padding(20.dp)) {
             Text(sound.title)
             Row(
                 modifier = modifier.fillMaxWidth(),
@@ -224,17 +228,47 @@ fun TrackCard(
                         imageVector = Icons.Filled.PlayArrow,
                         contentDescription = "Play")
                 }
-                IconButton(
-                    onClick = {
-                        if (mp.isPlaying) {
-                            mp.pause()
-                        }
-                    }) {
-                    Icon(
-                        imageVector = Icons.Sharp.Warning,
-                        contentDescription = "Pause")
-                }
+//                IconButton(
+//                    onClick = {
+//                        if (mp.isPlaying) {
+//                            mp.pause()
+//                        }
+//                    }) {
+//                    Icon(
+//                        imageVector = Icons.Filled.Close,
+//                        contentDescription = "Play"
+//                    )
+//
+//                }
+                ClickableImage(mp)
+//                Image(
+//                    painter = painterResource(id = R.drawable.pausebutton),
+//                    contentDescription = null
+//                )
             }
         }
     }
 }
+@Composable
+fun ClickableImage(mp: MediaPlayer) {
+    val context = LocalContext.current
+
+    // Replace R.drawable.pausebutton with your actual image resource ID
+    val imageResId = R.drawable.pausebutton
+
+    // Add a clickable modifier to the Image composable
+    Image(
+        painter = painterResource(id = imageResId),
+        contentDescription = null,
+        modifier = Modifier
+            .clickable {
+                       if (mp.isPlaying) {
+                           mp.pause()
+                        }
+            }
+            .size(80.dp)
+            .padding(10.dp)
+
+    )
+}
+
