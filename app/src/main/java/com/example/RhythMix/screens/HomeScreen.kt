@@ -19,14 +19,9 @@ import com.example.RhythMix.TrackCard
 @Composable
 fun HomeScreen(
     vm: RhythMixViewModel,
-    modifier: Modifier
+    modifier: Modifier,
+    mp: MediaPlayer
 ) {
-    val mp = MediaPlayer()
-    mp.setAudioAttributes(
-        AudioAttributes.Builder()
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .build())
     LazyColumn(
         content = {
             items(getSongs()) {

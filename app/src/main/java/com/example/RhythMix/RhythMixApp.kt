@@ -58,6 +58,12 @@ enum class Screens(@StringRes val title: Int) {
 @Composable
 fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
     val vm = RhythMixViewModel()
+    val mp = MediaPlayer()
+    mp.setAudioAttributes(
+        AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .build())
     val navController = rememberNavController()
     val prevVisits by navController.currentBackStackEntryAsState()
     val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
@@ -66,16 +72,16 @@ fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
         bottomBar = { RhythMixBottomBar(
             modifier = modifier,
             homeClick = {
+                mp.reset()
                 navController.navigate(Screens.Home.name)
-                // TODO: Change icon color
             },
             editClick = {
+                mp.reset()
                 navController.navigate(Screens.Edit.name)
-                // TODO: Change icon color
             },
             recordClick = {
+                mp.reset()
                 navController.navigate(Screens.Record.name)
-                // TODO: Change icon color
             }) },
         modifier = modifier) {
         NavHost(
@@ -83,10 +89,10 @@ fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
-                HomeScreen(vm = vm, modifier = modifier)
+                HomeScreen(vm = vm, modifier = modifier, mp = mp)
             }
             composable(route = Screens.Edit.name) {
-                EditScreen(vm = vm, modifier = modifier)
+                EditScreen(vm = vm, modifier = modifier, mp = mp)
             }
             composable(route = Screens.Record.name) {
                 RecordScreen(vm = vm, audioManager)
