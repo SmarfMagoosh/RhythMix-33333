@@ -30,11 +30,11 @@ fun getSongs(): List<Song> = listOf(
     Song("Not the Same Anymore", mutableListOf(), R.raw.not_the_same_anymore)
 )
 fun getTracks(): List<Track> = listOf(
-    Track("The Sickest Riff Known to Mankind",R.raw.sweet_child_of_mine),
+    Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
     Track("Bass", R.raw.billie_jean),
-    Track("Vocals",   R.raw.boulevard_of_broken_dreams),
-    Track("Saxophone Solo that Goes Crazy",  R.raw.careless_whisper),
-    Track("Vine Boom Sound Effect",   R.raw.vine_boom)
+    Track("Vocals", R.raw.boulevard_of_broken_dreams),
+    Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
+    Track("Vine Boom Sound Effect", R.raw.vine_boom)
 )
 class RhythMixViewModel: ViewModel() {
     private var _state = MutableStateFlow( State() )

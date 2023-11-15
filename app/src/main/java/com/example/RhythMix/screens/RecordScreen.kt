@@ -26,7 +26,7 @@ import java.io.IOException
 fun RecordScreen(
     vm: RhythMixViewModel,  audioManager: AudioManager
 ) {
-    Text("Record Audio")
+    Text("TODO: Record Audio")
 //    IconButton(
 //        onClick = { audioManager.startRecording(1)}
 //    ) {

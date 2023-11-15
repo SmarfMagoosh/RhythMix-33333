@@ -42,7 +42,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.RhythMix.classes.Sound
 import com.example.RhythMix.screens.AudioManager
@@ -68,7 +68,7 @@ fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
     val prevVisits by navController.currentBackStackEntryAsState()
     val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
     Scaffold(
-        topBar = { RhythMixTopBar(currentScreen = currentScreen)},
+        topBar = { RhythMixTopBar(currentScreen = currentScreen, mp = mp, navController = navController)},
         bottomBar = { RhythMixBottomBar(
             modifier = modifier,
             homeClick = {
@@ -103,7 +103,7 @@ fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RhythMixTopBar(currentScreen: Screens) {
+fun RhythMixTopBar(currentScreen: Screens, mp: MediaPlayer, navController: NavController) {
     TopAppBar(
         title = {
             Text("RhythMix")
@@ -111,31 +111,34 @@ fun RhythMixTopBar(currentScreen: Screens) {
         },
         actions = {when (currentScreen) {
             Screens.Home -> {
-
-                IconButton(onClick = { /* Handle icon click */ }) {
+                IconButton(onClick = {
+                    // TODO
+                }) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Create"
                     )
                 }
-                IconButton(onClick = { /* Handle icon click */ }) {
+                IconButton(onClick = { /* TODO */ }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Create"
+                        contentDescription = "Delete"
                     )
                 }
             }
             Screens.Edit -> {
-
-                IconButton(onClick = { /* Handle icon click */ }) {
+                IconButton(onClick = {
+                    mp.reset()
+                    navController.navigate(Screens.Record.name)
+                }) {
                     Icon(
-                        imageVector = Icons.Default.Check,
+                        imageVector = Icons.Default.Add,
                         contentDescription = "Delete"
                     )
                 }
                 IconButton(onClick = { /* Handle icon click */ }) {
                     Icon(
-                        imageVector = Icons.Default.AddCircle,
+                        imageVector = Icons.Default.Delete,
                         contentDescription = "Create"
                     )
                 }
