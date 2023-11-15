@@ -25,6 +25,10 @@ import com.example.RhythMix.screens.HomeScreen
 import com.example.RhythMix.screens.RecordScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
@@ -41,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.RhythMix.classes.Sound
+import com.example.RhythMix.screens.AudioManager
 
 enum class Screens(@StringRes val title: Int) {
     Home(R.string.home),
@@ -51,13 +56,13 @@ enum class Screens(@StringRes val title: Int) {
 @RequiresApi(34)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RhythMixApp(modifier: Modifier = Modifier) {
+fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
     val vm = RhythMixViewModel()
     val navController = rememberNavController()
     val prevVisits by navController.currentBackStackEntryAsState()
-    val currentScreen = Screens.valueOf(prevVisits?.destination?.route?: Screens.Home.name)
+    val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
     Scaffold(
-        topBar = { RhythMixTopBar() },
+        topBar = { RhythMixTopBar(currentScreen = currentScreen)},
         bottomBar = { RhythMixBottomBar(
             modifier = modifier,
             homeClick = {
@@ -84,7 +89,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
                 EditScreen(vm = vm, modifier = modifier)
             }
             composable(route = Screens.Record.name) {
-                RecordScreen(vm = vm)
+                RecordScreen(vm = vm, audioManager)
             }
         }
     }
@@ -92,31 +97,60 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RhythMixTopBar() {
+fun RhythMixTopBar(currentScreen: Screens) {
     TopAppBar(
         title = {
-            Text("RythMix")
+            Text("RhythMix")
                 
         },
-        actions = {
-            IconButton(
-                onClick = { /* Handle icon click */ }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Create"
-                )
+        actions = {when (currentScreen) {
+            Screens.Home -> {
+
+                IconButton(onClick = { /* Handle icon click */ }) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Create"
+                    )
+                }
+                IconButton(onClick = { /* Handle icon click */ }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Create"
+                    )
+                }
             }
-            IconButton(
-                onClick = { /* Handle icon click */ }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete"
-                )
+            Screens.Edit -> {
+
+                IconButton(onClick = { /* Handle icon click */ }) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Delete"
+                    )
+                }
+                IconButton(onClick = { /* Handle icon click */ }) {
+                    Icon(
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = "Create"
+                    )
+                }
+            }
+            Screens.Record -> {
+
+                IconButton(onClick = { /* Handle icon click */ }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Delete"
+                    )
+                }
+                IconButton(onClick = { /* Handle icon click */ }) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = "Create"
+                    )
+                }
             }
         }
-
+        }
     )
 }
 
