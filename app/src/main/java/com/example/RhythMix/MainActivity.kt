@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.example.RhythMix.ui.theme.RhythMixTheme
 import android.Manifest
+import com.example.RhythMix.screens.AudioManager
 
 
 class MainActivity : ComponentActivity() {
@@ -31,6 +32,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        requestPermissions()
+        var audioManager: AudioManager = AudioManager(this)
     }
     private fun requestPermissions(){
         val hasRecordedPermission = ContextCompat.checkSelfPermission(
