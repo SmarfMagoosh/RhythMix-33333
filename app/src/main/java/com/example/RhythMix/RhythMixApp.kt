@@ -70,19 +70,21 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
     val prevVisits by navController.currentBackStackEntryAsState()
     val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
     Scaffold(
-        topBar = { RhythMixTopBar(currentScreen = currentScreen, mp = mp, navController = navController)},
+        //mp.reset()
+        topBar = { RhythMixTopBar(currentScreen = currentScreen, vm =vm, navController = navController)},
         bottomBar = { RhythMixBottomBar(
             modifier = modifier,
             homeClick = {
-                mp.reset()
+                //mp.reset()
+                vm.mp.reset()
                 navController.navigate(Screens.Home.name)
             },
             editClick = {
-                mp.reset()
+                vm.mp.reset()
                 navController.navigate(Screens.Edit.name)
             },
             recordClick = {
-                mp.reset()
+                vm.mp.reset()
                 navController.navigate(Screens.Record.name)
             }) },
         modifier = modifier) {
@@ -91,7 +93,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
-                HomeScreen(vm = vm, modifier = modifier, mp = mp)
+                HomeScreen(vm = vm, modifier = modifier)
             }
             composable(route = Screens.Edit.name) {
                 EditScreen(vm = vm, modifier = modifier, mp = mp)
@@ -105,7 +107,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RhythMixTopBar(currentScreen: Screens, mp: MediaPlayer, navController: NavController) {
+fun RhythMixTopBar(currentScreen: Screens, vm: RhythMixViewModel, navController: NavController) {
     TopAppBar(
         title = {
             Text("RhythMix")
@@ -130,7 +132,7 @@ fun RhythMixTopBar(currentScreen: Screens, mp: MediaPlayer, navController: NavCo
             }
             Screens.Edit -> {
                 IconButton(onClick = {
-                    mp.reset()
+                    vm.mp.reset()
                     navController.navigate(Screens.Record.name)
                 }) {
                     Icon(
@@ -205,7 +207,6 @@ fun TrackCard(
     sound: Sound,
     modifier: Modifier,
     vm: RhythMixViewModel,
-    mp: MediaPlayer,
     ctx: Context = LocalContext.current) {
     Card(modifier = Modifiers.cardModifier) {
         Column(modifier = modifier
@@ -219,17 +220,17 @@ fun TrackCard(
             ) {
                 IconButton(
                     onClick = {
-                        mp.reset()
-                        mp.setDataSource(ctx.resources.openRawResourceFd(sound.file))
-                        mp.prepare()
-                        mp.start()
+                        vm.mp.reset()
+                       vm.mp.setDataSource(ctx.resources.openRawResourceFd(sound.file))
+                        vm.mp.prepare()
+                        vm.mp.start()
                     }) {
                     Icon(
                         imageVector = Icons.Filled.PlayArrow,
                         contentDescription = "Play")
                 }
 
-                ClickableImage(mp)
+                ClickableImage(vm.mp)
 
             }
         }

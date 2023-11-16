@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 fun HomeScreen(
     vm: RhythMixViewModel,
     modifier: Modifier,
-    mp: MediaPlayer
 ) {
     when(LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -42,7 +41,7 @@ fun HomeScreen(
                     modifier = modifier.fillMaxWidth(0.5F),
                     content = {
                         items(vm.getSongs()) {
-                            TrackCard(sound = it, vm = vm, modifier = modifier, mp = mp)
+                            TrackCard(sound = it, vm = vm, modifier = modifier)
                         }
                     }
                 )
@@ -50,7 +49,7 @@ fun HomeScreen(
                     modifier = modifier.fillMaxWidth(),
                     content = {
                         items(vm.getTracks()) {
-                            TrackCard(sound = it, modifier = modifier, vm = vm, mp = mp)
+                            TrackCard(sound = it, modifier = modifier, vm = vm)
                         }
                     }
                 )
@@ -88,7 +87,7 @@ fun HomeScreen(
                     modifier = modifier.fillMaxWidth().padding(15.dp),
                     content = {
                         items(if (viewingTracks.value) tracks else songs) {
-                            TrackCard(sound = it, modifier = modifier, vm = vm, mp = mp)
+                            TrackCard(sound = it, modifier = modifier, vm = vm)
                         }
                     })
             }

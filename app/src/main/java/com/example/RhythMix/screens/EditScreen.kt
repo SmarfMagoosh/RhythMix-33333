@@ -17,7 +17,7 @@ fun EditScreen(
     LazyColumn(
         content = {
             items(vm.getTracks()) {
-                TrackCard(sound = it, modifier = modifier, vm = vm, mp = mp)
+                TrackCard(sound = it, modifier = modifier, vm = vm)
             }
         }
     )

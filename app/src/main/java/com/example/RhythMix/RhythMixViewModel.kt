@@ -3,6 +3,8 @@ package com.example.RhythMix
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
@@ -19,6 +21,7 @@ import com.example.RhythMix.classes.Song
 import com.example.RhythMix.classes.Track
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+
 data class State(
     val foo: Int = 0,
     val bar: Int = 1
@@ -35,6 +38,19 @@ object Modifiers {
 class RhythMixViewModel: ViewModel() {
     private var _state = MutableStateFlow( State() )
     val state = _state.asStateFlow()
+
+    val mp = MediaPlayer()
+
+    init {
+        mp.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build()
+        )
+    }
+
+
     // TODO
     fun getSongs(): List<Song> = listOf(
         Song("Reptilia", mutableListOf(), R.raw.reptilia),
@@ -51,6 +67,7 @@ class RhythMixViewModel: ViewModel() {
         Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
         Track("Vine Boom Sound Effect", R.raw.vine_boom)
     )
+
 
 }
 
