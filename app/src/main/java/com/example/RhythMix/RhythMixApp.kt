@@ -43,11 +43,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 import com.example.RhythMix.classes.Sound
-import com.example.RhythMix.screens.AudioManager
 
 enum class Screens(@StringRes val title: Int) {
     Home(R.string.home),
@@ -58,7 +58,7 @@ enum class Screens(@StringRes val title: Int) {
 @RequiresApi(34)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
+fun RhythMixApp(modifier: Modifier = Modifier) {
     val vm = RhythMixViewModel()
     val mp = MediaPlayer()
     mp.setAudioAttributes(
@@ -97,7 +97,7 @@ fun RhythMixApp(modifier: Modifier = Modifier,audioManager: AudioManager) {
                 EditScreen(vm = vm, modifier = modifier, mp = mp)
             }
             composable(route = Screens.Record.name) {
-                RecordScreen(vm = vm, audioManager)
+                RecordScreen(vm = vm , context = LocalContext.current)
             }
         }
     }

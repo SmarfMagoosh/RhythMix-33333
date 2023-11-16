@@ -15,12 +15,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.example.RhythMix.ui.theme.RhythMixTheme
 import android.Manifest
-import com.example.RhythMix.screens.AudioManager
+import androidx.annotation.RequiresApi
+import java.io.File
+
+//import com.example.RhythMix.screens.AudioManager
 
 
 class MainActivity : ComponentActivity() {
-   // var audioManager: AudioManager = AudioManager(this)
-   private val audioManager: AudioManager by lazy { AudioManager(this) }
+
+
+
+    private var audioFile: File? = null
+    @RequiresApi(34)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -30,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RhythMixApp(modifier = Modifier, audioManager)
+                    RhythMixApp(modifier = Modifier)
                 }
             }
         }
