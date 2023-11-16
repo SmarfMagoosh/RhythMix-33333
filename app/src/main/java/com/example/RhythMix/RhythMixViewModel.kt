@@ -6,10 +6,13 @@ import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.os.Build
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.example.RhythMix.classes.Song
@@ -25,7 +28,7 @@ object Modifiers {
     val cardModifier: Modifier = Modifier
         .fillMaxWidth()
         .height(120.dp)
-        .padding(10.dp)
+        .padding(5.dp)
 }
 fun getSongs(): List<Song> = listOf(
     Song("Reptilia", mutableListOf(), R.raw.reptilia),
