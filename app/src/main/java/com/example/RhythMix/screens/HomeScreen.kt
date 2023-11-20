@@ -25,12 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.RhythMix.classes.Song
 
 @RequiresApi(34)
 @Composable
 fun HomeScreen(
     vm: RhythMixViewModel,
     modifier: Modifier,
+    editSong: () -> Unit = {}
 ) {
     when(LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -41,7 +43,10 @@ fun HomeScreen(
                     modifier = modifier.fillMaxWidth(0.5F),
                     content = {
                         items(vm.getSongs()) {
-                            TrackCard(sound = it, vm = vm, modifier = modifier)
+                            TrackCard(sound = it, vm = vm, modifier = modifier, editSong = {
+                                vm.setSong(it)
+                                editSong()
+                            })
                         }
                     }
                 )
@@ -87,7 +92,19 @@ fun HomeScreen(
                     modifier = modifier.fillMaxWidth().padding(15.dp),
                     content = {
                         items(if (viewingTracks.value) tracks else songs) {
-                            TrackCard(sound = it, modifier = modifier, vm = vm)
+                            TrackCard(
+                                sound = it,
+                                modifier = modifier,
+                                vm = vm,
+                                editSong = if (it is Song) {
+                                    {
+                                        vm.setSong(it)
+                                        editSong()
+                                    }
+                                } else {
+                                    {}
+                                }
+                            )
                         }
                     })
             }

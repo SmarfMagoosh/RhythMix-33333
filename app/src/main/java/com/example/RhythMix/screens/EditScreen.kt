@@ -1,24 +1,17 @@
 package com.example.RhythMix.screens
 
-import android.media.MediaPlayer
-import androidx.compose.foundation.lazy.LazyColumn
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import com.example.RhythMix.RhythMixViewModel
-import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
-import com.example.RhythMix.TrackCard
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun EditScreen(
     vm: RhythMixViewModel,
-    modifier: Modifier,
-    mp: MediaPlayer
+    modifier: Modifier
 ) {
-    LazyColumn(
-        content = {
-            items(vm.getTracks()) {
-                TrackCard(sound = it, modifier = modifier, vm = vm)
-            }
-        }
-    )
+    val state = vm.state.collectAsState().value
+    println(vm.state.value)
 }

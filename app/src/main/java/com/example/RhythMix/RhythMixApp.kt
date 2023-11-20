@@ -1,8 +1,6 @@
 package com.example.RhythMix
 
 import android.content.Context
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -43,11 +41,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.RhythMix.classes.Song
 
 import com.example.RhythMix.classes.Sound
+import com.example.RhythMix.classes.Track
 
 enum class Screens(@StringRes val title: Int) {
     Home(R.string.home),
@@ -60,22 +59,14 @@ enum class Screens(@StringRes val title: Int) {
 @Composable
 fun RhythMixApp(modifier: Modifier = Modifier) {
     val vm = RhythMixViewModel()
-    val mp = MediaPlayer()
-    mp.setAudioAttributes(
-        AudioAttributes.Builder()
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .build())
     val navController = rememberNavController()
     val prevVisits by navController.currentBackStackEntryAsState()
     val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
     Scaffold(
-        //mp.reset()
         topBar = { RhythMixTopBar(currentScreen = currentScreen, vm =vm, navController = navController)},
         bottomBar = { RhythMixBottomBar(
             modifier = modifier,
             homeClick = {
-                //mp.reset()
                 vm.mp.reset()
                 navController.navigate(Screens.Home.name)
             },
@@ -93,10 +84,16 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
-                HomeScreen(vm = vm, modifier = modifier)
+                HomeScreen(
+                    vm = vm,
+                    modifier = modifier,
+                    editSong = {
+                        navController.navigate(Screens.Edit.name)
+                    }
+                )
             }
             composable(route = Screens.Edit.name) {
-                EditScreen(vm = vm, modifier = modifier, mp = mp)
+                EditScreen(vm = vm, modifier = modifier)
             }
             composable(route = Screens.Record.name) {
                 RecordScreen(vm = vm , context = LocalContext.current)
@@ -111,7 +108,6 @@ fun RhythMixTopBar(currentScreen: Screens, vm: RhythMixViewModel, navController:
     TopAppBar(
         title = {
             Text("RhythMix")
-                
         },
         actions = {when (currentScreen) {
             Screens.Home -> {
@@ -201,61 +197,76 @@ fun RhythMixBottomBar(modifier: Modifier, homeClick: () -> Unit, editClick: () -
         }
     }
 }
-
 @Composable
 fun TrackCard(
     sound: Sound,
     modifier: Modifier,
     vm: RhythMixViewModel,
-    ctx: Context = LocalContext.current) {
+    ctx: Context = LocalContext.current,
+    editSong: () -> Unit = {}) {
     Card(modifier = Modifiers.cardModifier) {
-        Column(modifier = modifier
-            .fillMaxHeight()
-            .padding(20.dp)) {
+        Column(
+            modifier = modifier
+                .fillMaxHeight()
+                .padding(20.dp)) {
             Text(sound.title)
-            Row(
-                modifier = modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-               // horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(
-                    onClick = {
-                        vm.mp.reset()
-                       vm.mp.setDataSource(ctx.resources.openRawResourceFd(sound.file))
-                        vm.mp.prepare()
-                        vm.mp.start()
-                    }) {
-                    Icon(
-                        imageVector = Icons.Filled.PlayArrow,
-                        contentDescription = "Play")
+            if (sound is Track) {
+                Row(
+                    modifier = modifier.fillMaxWidth(0.2F),
+                    horizontalArrangement = Arrangement.End) {
+                    IconButton(
+                        onClick = { vm.play(sound, ctx) },
+                        modifier = modifier) {
+                        Icon(
+                            imageVector = Icons.Filled.PlayArrow,
+                            contentDescription = "Play")
+                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.pausebutton),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clickable {
+                                if (vm.mp.isPlaying) {
+                                    vm.mp.pause()
+                                }
+                            })
                 }
-
-                ClickableImage(vm.mp)
-
+            } else if (sound is Song) {
+                Row(
+                    modifier = modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        modifier = modifier.fillMaxWidth(0.2F),
+                        horizontalArrangement = Arrangement.End) {
+                        IconButton(
+                            onClick = { vm.play(sound, ctx) },
+                            modifier = modifier) {
+                            Icon(
+                                imageVector = Icons.Filled.PlayArrow,
+                                contentDescription = "Play")
+                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.pausebutton),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clickable {
+                                    if (vm.mp.isPlaying) {
+                                        vm.mp.pause()
+                                    }
+                                })
+                    }
+                    IconButton(
+                        onClick = editSong,
+                        modifier = modifier) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = null)
+                    }
+                }
             }
         }
     }
-}
-@Composable
-fun ClickableImage(mp: MediaPlayer) {
-    val context = LocalContext.current
-
-    // Replace R.drawable.pausebutton with your actual image resource ID
-    val imageResId = R.drawable.pausebutton
-
-    // Add a clickable modifier to the Image composable
-    Image(
-        painter = painterResource(id = imageResId),
-        contentDescription = null,
-        modifier = Modifier
-            .clickable {
-                       if (mp.isPlaying) {
-                           mp.pause()
-                        }
-            }
-            .size(80.dp)
-            .padding(10.dp)
-
-    )
 }
 
