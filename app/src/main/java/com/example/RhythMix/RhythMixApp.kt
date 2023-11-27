@@ -1,6 +1,7 @@
 package com.example.RhythMix
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -26,21 +27,32 @@ import com.example.RhythMix.screens.HomeScreen
 import com.example.RhythMix.screens.RecordScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.RhythMix.classes.Song
@@ -62,6 +74,8 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val prevVisits by navController.currentBackStackEntryAsState()
     val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
+
+
     Scaffold(
         topBar = { RhythMixTopBar(currentScreen = currentScreen, vm =vm, navController = navController)},
         bottomBar = { RhythMixBottomBar(
@@ -105,6 +119,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RhythMixTopBar(currentScreen: Screens, vm: RhythMixViewModel, navController: NavController) {
+    var showDialog by remember { mutableStateOf(false) }
     TopAppBar(
         title = {
             Text("RhythMix")
@@ -147,18 +162,89 @@ fun RhythMixTopBar(currentScreen: Screens, vm: RhythMixViewModel, navController:
 
                 IconButton(onClick = { /* Handle icon click */ }) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Delete"
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = "Timer"
                     )
                 }
-                IconButton(onClick = { /* Handle icon click */ }) {
+                IconButton(onClick = {
+                    showDialog = true
+                }) {
                     Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Create"
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "Metronome"
                     )
                 }
             }
         }
+        }
+
+    )
+    if (showDialog) {
+        MetronomeDialog(
+            onDismiss = {
+                showDialog = false
+            },
+            onConfirm = {
+                    userInput ->
+
+               // vm.playSoundMultipleTimes(userInput)
+
+            },
+
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MetronomeDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+
+) {
+    var userInput by remember { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Metronome")
+        },
+
+        text = {
+
+            TextField(
+                value = userInput,
+                onValueChange = {
+                    userInput = it
+                },
+                label = {
+                    Text("BPM")
+                }
+            )
+        },
+
+        confirmButton = {
+            Button(
+                onClick = {
+
+                    val timesToPlay = userInput.toIntOrNull() ?: 0
+                    onConfirm(timesToPlay.toString())
+                    onDismiss()
+                }
+            ) {
+                Text("OK")
+            }
+        },
+
+        dismissButton = {
+
+            Button(
+                onClick = {
+
+                    onDismiss()
+                }
+            ) {
+                Text("Cancel")
+            }
         }
     )
 }
@@ -203,23 +289,29 @@ fun TrackCard(
     modifier: Modifier,
     vm: RhythMixViewModel,
     ctx: Context = LocalContext.current,
-    editSong: () -> Unit = {}) {
+    editSong: (Song) -> Unit = {}) {
+    //val state by vm.state.collectAsState()
     Card(modifier = Modifiers.cardModifier) {
+
         Column(
             modifier = modifier
                 .fillMaxHeight()
-                .padding(20.dp)) {
+                .padding(20.dp)
+        ) {
             Text(sound.title)
             if (sound is Track) {
                 Row(
                     modifier = modifier.fillMaxWidth(0.2F),
-                    horizontalArrangement = Arrangement.End) {
+                    horizontalArrangement = Arrangement.End
+                ) {
                     IconButton(
                         onClick = { vm.play(sound, ctx) },
-                        modifier = modifier) {
+                        modifier = modifier
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.PlayArrow,
-                            contentDescription = "Play")
+                            contentDescription = "Play"
+                        )
                     }
                     Image(
                         painter = painterResource(id = R.drawable.pausebutton),
@@ -235,16 +327,20 @@ fun TrackCard(
             } else if (sound is Song) {
                 Row(
                     modifier = modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Row(
                         modifier = modifier.fillMaxWidth(0.2F),
-                        horizontalArrangement = Arrangement.End) {
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         IconButton(
                             onClick = { vm.play(sound, ctx) },
-                            modifier = modifier) {
+                            modifier = modifier
+                        ) {
                             Icon(
                                 imageVector = Icons.Filled.PlayArrow,
-                                contentDescription = "Play")
+                                contentDescription = "Play"
+                            )
                         }
                         Image(
                             painter = painterResource(id = R.drawable.pausebutton),
@@ -258,15 +354,27 @@ fun TrackCard(
                                 })
                     }
                     IconButton(
-                        onClick = editSong,
-                        modifier = modifier) {
+                        onClick = {
+                            if (sound is Song) {
+                                editSong(sound)
+                                Log.d("onclick edit",sound.title)
+                                //vm.addSongToEditing(sound.title)
+
+
+                            }
+                        },
+                        modifier = Modifier
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
-                            contentDescription = null)
+                            contentDescription = null
+                        )
                     }
                 }
             }
         }
     }
+
 }
+
 
