@@ -1,5 +1,6 @@
 package com.example.RhythMix
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -41,7 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.RhythMix.classes.Song
 
@@ -54,49 +55,52 @@ enum class Screens(@StringRes val title: Int) {
     Record(R.string.record)
 }
 
+object singleton {
+    val vm: RhythMixViewModel = RhythMixViewModel()
+    @SuppressLint("StaticFieldLeak")
+    var controller: NavHostController? = null
+        get() = field
+        set(input) { field = input }
+}
+
 @RequiresApi(34)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RhythMixApp(modifier: Modifier = Modifier) {
     val vm = RhythMixViewModel()
-    val navController = rememberNavController()
-    val prevVisits by navController.currentBackStackEntryAsState()
+    singleton.controller = rememberNavController()
+
+    val prevVisits by singleton.controller!!.currentBackStackEntryAsState()
     val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
     Scaffold(
-        topBar = { RhythMixTopBar(currentScreen = currentScreen, vm =vm, navController = navController)},
+        topBar = { RhythMixTopBar(currentScreen = currentScreen)},
         bottomBar = { RhythMixBottomBar(
             modifier = modifier,
             homeClick = {
                 vm.mp.reset()
-                navController.navigate(Screens.Home.name)
+                singleton.controller!!.navigate(Screens.Home.name)
             },
             editClick = {
                 vm.mp.reset()
-                navController.navigate(Screens.Edit.name)
+                singleton.controller!!.navigate(Screens.Edit.name)
             },
             recordClick = {
                 vm.mp.reset()
-                navController.navigate(Screens.Record.name)
+                singleton.controller!!.navigate(Screens.Record.name)
             }) },
         modifier = modifier) {
         NavHost(
-            navController = navController,
+            navController = singleton.controller!!,
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
-                HomeScreen(
-                    vm = vm,
-                    modifier = modifier,
-                    editSong = {
-                        navController.navigate(Screens.Edit.name)
-                    }
-                )
+                HomeScreen(modifier = modifier)
             }
             composable(route = Screens.Edit.name) {
-                EditScreen(vm = vm, modifier = modifier)
+                EditScreen(modifier = modifier)
             }
             composable(route = Screens.Record.name) {
-                RecordScreen(vm = vm , context = LocalContext.current)
+                RecordScreen(context = LocalContext.current)
             }
         }
     }
@@ -104,7 +108,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RhythMixTopBar(currentScreen: Screens, vm: RhythMixViewModel, navController: NavController) {
+fun RhythMixTopBar(currentScreen: Screens) {
     TopAppBar(
         title = {
             Text("RhythMix")
@@ -128,8 +132,8 @@ fun RhythMixTopBar(currentScreen: Screens, vm: RhythMixViewModel, navController:
             }
             Screens.Edit -> {
                 IconButton(onClick = {
-                    vm.mp.reset()
-                    navController.navigate(Screens.Record.name)
+                    singleton.vm.mp.reset()
+                    singleton.controller!!.navigate(Screens.Record.name)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -144,7 +148,6 @@ fun RhythMixTopBar(currentScreen: Screens, vm: RhythMixViewModel, navController:
                 }
             }
             Screens.Record -> {
-
                 IconButton(onClick = { /* Handle icon click */ }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
@@ -201,7 +204,6 @@ fun RhythMixBottomBar(modifier: Modifier, homeClick: () -> Unit, editClick: () -
 fun TrackCard(
     sound: Sound,
     modifier: Modifier,
-    vm: RhythMixViewModel,
     ctx: Context = LocalContext.current,
     editSong: () -> Unit = {}) {
     Card(modifier = Modifiers.cardModifier) {
@@ -215,7 +217,7 @@ fun TrackCard(
                     modifier = modifier.fillMaxWidth(0.2F),
                     horizontalArrangement = Arrangement.End) {
                     IconButton(
-                        onClick = { vm.play(sound, ctx) },
+                        onClick = { singleton.vm.play(sound, ctx) },
                         modifier = modifier) {
                         Icon(
                             imageVector = Icons.Filled.PlayArrow,
@@ -227,8 +229,8 @@ fun TrackCard(
                         modifier = Modifier
                             .size(80.dp)
                             .clickable {
-                                if (vm.mp.isPlaying) {
-                                    vm.mp.pause()
+                                if (singleton.vm.mp.isPlaying) {
+                                    singleton.vm.mp.pause()
                                 }
                             })
                 }
@@ -240,7 +242,7 @@ fun TrackCard(
                         modifier = modifier.fillMaxWidth(0.2F),
                         horizontalArrangement = Arrangement.End) {
                         IconButton(
-                            onClick = { vm.play(sound, ctx) },
+                            onClick = { singleton.vm.play(sound, ctx) },
                             modifier = modifier) {
                             Icon(
                                 imageVector = Icons.Filled.PlayArrow,
@@ -252,8 +254,8 @@ fun TrackCard(
                             modifier = Modifier
                                 .size(80.dp)
                                 .clickable {
-                                    if (vm.mp.isPlaying) {
-                                        vm.mp.pause()
+                                    if (singleton.vm.mp.isPlaying) {
+                                        singleton.vm.mp.pause()
                                     }
                                 })
                     }

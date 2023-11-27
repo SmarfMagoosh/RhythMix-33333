@@ -1,17 +1,15 @@
 package com.example.RhythMix.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
-import com.example.RhythMix.RhythMixViewModel
 import androidx.compose.ui.Modifier
+import com.example.RhythMix.singleton
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun EditScreen(
-    vm: RhythMixViewModel,
     modifier: Modifier
 ) {
-    val state = vm.state.collectAsState().value
-    println(vm.state.value)
+    val state = singleton.vm.state.collectAsState()
+    Text(state.value.editing?.title ?: "hello")
 }

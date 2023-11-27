@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import androidx.navigation.compose.rememberNavController
 import com.example.RhythMix.classes.Song
 import com.example.RhythMix.classes.Sound
 import com.example.RhythMix.classes.Track
@@ -18,8 +17,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 data class State(
-    val editing: Song? = null
+    var editing: Song? = null
 )
+
 object Modifiers {
     val cardModifier: Modifier = Modifier
         .fillMaxWidth()
@@ -65,9 +65,6 @@ class RhythMixViewModel: ViewModel() {
             mp.start()
         }
     }
-    fun setSong(song: Song) {
-        _state.update { it.copy(editing = song) }
-        println(song.title)
-    }
+    fun setSong(song: Song) = _state.update { it.copy(editing = song) }
 }
 
