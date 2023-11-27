@@ -29,12 +29,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
-data class MyState(
-    //val editing: Song? = null
-    //var editing: Song = Song("testTitle")
-    val title: String = "Default"
-
-
 data class State(
     var editing: Song? = null
 )
@@ -46,25 +40,9 @@ object Modifiers {
         .padding(5.dp)
 }
 class RhythMixViewModel: ViewModel() {
-    //var _state = MutableStateFlow( State() )
-    //val state = _state.asStateFlow()
+    var _state = MutableStateFlow( State() )
+    val state = _state.asStateFlow()
     val mp = MediaPlayer()
-    //var currentSongs: State? = null
-    val mutex = Mutex()
-    //var list : String ?= null
-    //private val _mainCatTitle = mutableStateOf("")
-    private val _mainCatTitle = MutableStateFlow(MyState())
-    val mainCatTitle = _mainCatTitle.asStateFlow()
-//     fun addSongToEditing(title: String) {
-//        Log.d("calling","addsongtoediting()")
-//        Log.d("title in ()",title)
-//         mainCatTitle.value = title
-//            Log.d("end()", _mainCatTitle.value)
-//
-//
-//      //  }
-
-    //}
 
     init {
         mp.setAudioAttributes(
@@ -101,17 +79,9 @@ class RhythMixViewModel: ViewModel() {
             mp.start()
         }
     }
-    fun setSong(song: Song) {
-        //_state.update { it.copy(editing = song) }
-        Log.d("setSong",song.title)
-        _mainCatTitle.update { currentState -> currentState.copy(title = song.title)}
-        Log.d("mainCatTitle",mainCatTitle.value.title)
-    }
-
-
+    fun setSong(song: Song) = _state.update { it.copy(editing = song) }
 
     suspend fun playSoundMultipleTimes( timesToPlay: String) {
-
         withContext(Dispatchers.IO) {
             repeat(timesToPlay.toInt()) {
              //   play(sound, ctx)
@@ -119,7 +89,5 @@ class RhythMixViewModel: ViewModel() {
             }
         }
     }
-
-
 }
 
