@@ -9,16 +9,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.example.RhythMix.ui.theme.RhythMixTheme
 import android.Manifest
 import androidx.annotation.RequiresApi
 import java.io.File
-
-
 
 class MainActivity : ComponentActivity() {
 
@@ -40,7 +36,6 @@ class MainActivity : ComponentActivity() {
             }
         }
         requestPermissions()
-
     }
     private fun requestPermissions(){
         val hasRecordedPermission = ContextCompat.checkSelfPermission(
@@ -57,10 +52,4 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-  //  RhythMixApp()
 }

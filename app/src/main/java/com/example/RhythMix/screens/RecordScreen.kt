@@ -1,38 +1,22 @@
 package com.example.RhythMix.screens
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.pm.PackageManager
-import android.media.MediaPlayer
-import android.media.MediaRecorder
-import android.os.Build
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import com.example.RhythMix.RhythMixViewModel
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.RhythMix.playback.AndroidAudioPlayer
 import com.example.RhythMix.record.AndroidAudioRecorder
 import java.io.File
-import java.io.IOException
 
 
 
 @Composable
 fun RecordScreen(
-    vm: RhythMixViewModel,
     context: Context
 ) {
      val recorder by lazy{
