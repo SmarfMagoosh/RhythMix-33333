@@ -201,51 +201,47 @@ fun RhythMixTopBar(currentScreen: Screens) {
 fun MetronomeDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
-
 ) {
-    var userInput by remember { mutableStateOf("") }
+    var updateMetronomeText by remember { mutableStateOf("") }
+    val mTimer: CountUpTimer = object : CountUpTimer(30000) {
+        override fun onTick(second: Int) {
+            updateMetronomeText = second.toString()
+        }
+    }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text("Metronome")
         },
-
         text = {
-
-            TextField(
-                value = userInput,
-                onValueChange = {
-                    userInput = it
-                },
-                label = {
-                    Text("BPM")
-                }
-            )
+            Text(updateMetronomeText )
         },
 
         confirmButton = {
             Button(
                 onClick = {
-
-                    val timesToPlay = userInput.toIntOrNull() ?: 0
-                    onConfirm(timesToPlay.toString())
-                    onDismiss()
+                    mTimer.start()
                 }
             ) {
-                Text("OK")
+                Text("Start")
             }
-        },
-
-        dismissButton = {
 
             Button(
                 onClick = {
+                    mTimer.cancel()
+                }
+            ) {
+                Text("Stop")
+            }
 
+            Button(
+                onClick = {
                     onDismiss()
                 }
             ) {
-                Text("Cancel")
+                Text("Close")
             }
+
         }
     )
 }
