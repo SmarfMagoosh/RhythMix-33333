@@ -13,22 +13,11 @@ import com.example.RhythMix.playback.AndroidAudioPlayer
 import com.example.RhythMix.record.AndroidAudioRecorder
 import java.io.File
 
-
-
 @Composable
-fun RecordScreen(
-    context: Context
-) {
-     val recorder by lazy{
-        AndroidAudioRecorder(context)
-    }
-
-   val player by lazy{
-        AndroidAudioPlayer(context)
-    }
-
+fun RecordScreen(context: Context) {
+    val recorder by lazy { AndroidAudioRecorder(context) }
+    val player by lazy { AndroidAudioPlayer(context) }
     var audioFile: File? = null
-
     val cacheDir = context.cacheDir
 
     Column(
@@ -42,32 +31,19 @@ fun RecordScreen(
                 File(cacheDir, "audio.mp3").also{
                     recorder.start(it)
                     audioFile = it
-
                 }
-
             }){
-            Text( text = "Start")
+            Text(text = "Start")
         }
-        Button(
-            onClick = {
-                recorder.stop()
-            }){
-            Text( text = "Stop")
+        Button(onClick = { recorder.stop() }){
+            Text(text = "Stop")
         }
-        Button(
-            onClick = {
-                player.playFile(audioFile ?: return@Button)
-
-            }){
-            Text( text = "Play")
+        Button(onClick = { player.playFile(audioFile ?: return@Button) }){
+            Text(text = "Play")
         }
-        Button(
-            onClick = {
-                player.stop()
-            }){
-            Text( text = "End")
+        Button(onClick = { player.stop() }){
+            Text(text = "End")
         }
-
     }
 }
 

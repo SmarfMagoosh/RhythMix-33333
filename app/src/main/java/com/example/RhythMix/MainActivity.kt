@@ -17,9 +17,6 @@ import androidx.annotation.RequiresApi
 import java.io.File
 
 class MainActivity : ComponentActivity() {
-
-
-
     private var audioFile: File? = null
     @RequiresApi(34)
     override fun onCreate(savedInstanceState: Bundle?) {

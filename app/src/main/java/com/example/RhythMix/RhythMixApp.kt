@@ -3,9 +3,7 @@ package com.example.RhythMix
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,50 +54,39 @@ import com.example.RhythMix.screens.EditScreen
 import com.example.RhythMix.screens.HomeScreen
 import com.example.RhythMix.screens.RecordScreen
 
-enum class Screens(@StringRes val title: Int) {
-    Home(R.string.home),
-    Edit(R.string.home),
-    Record(R.string.record)
-}
-
-object singleton {
+enum class Screens { Home, Edit, Record }
+object Singleton {
     val vm: RhythMixViewModel = RhythMixViewModel()
     @SuppressLint("StaticFieldLeak")
     var controller: NavHostController? = null
-        get() = field
-        set(input) { field = input }
 }
-
 @RequiresApi(34)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RhythMixApp(modifier: Modifier = Modifier) {
-    val vm = RhythMixViewModel()
-    singleton.controller = rememberNavController()
-
-    val prevVisits by singleton.controller!!.currentBackStackEntryAsState()
+    Singleton.controller = rememberNavController()
+    val prevVisits by Singleton.controller!!.currentBackStackEntryAsState()
     val currentScreen = Screens.valueOf(prevVisits?.destination?.route ?: Screens.Home.name)
-
 
     Scaffold(
         topBar = { RhythMixTopBar(currentScreen = currentScreen)},
         bottomBar = { RhythMixBottomBar(
             modifier = modifier,
             homeClick = {
-                vm.mp.reset()
-                singleton.controller!!.navigate(Screens.Home.name)
+                Singleton.vm.mp.reset()
+                Singleton.controller!!.navigate(Screens.Home.name)
             },
             editClick = {
-                vm.mp.reset()
-                singleton.controller!!.navigate(Screens.Edit.name)
+                Singleton.vm.mp.reset()
+                Singleton.controller!!.navigate(Screens.Edit.name)
             },
             recordClick = {
-                vm.mp.reset()
-                singleton.controller!!.navigate(Screens.Record.name)
+                Singleton.vm.mp.reset()
+                Singleton.controller!!.navigate(Screens.Record.name)
             }) },
         modifier = modifier) {
         NavHost(
-            navController = singleton.controller!!,
+            navController = Singleton.controller!!,
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
@@ -122,9 +108,7 @@ fun RhythMixTopBar(currentScreen: Screens) {
     var showDialog by remember { mutableStateOf(false) }
     var showTimerDialog by remember { mutableStateOf(false) }
     TopAppBar(
-        title = {
-            Text("RhythMix")
-        },
+        title = { Text("RhythMix") },
         actions = {when (currentScreen) {
             Screens.Home -> {
                 IconButton(onClick = {
@@ -144,8 +128,8 @@ fun RhythMixTopBar(currentScreen: Screens) {
             }
             Screens.Edit -> {
                 IconButton(onClick = {
-                    singleton.vm.mp.reset()
-                    singleton.controller!!.navigate(Screens.Record.name)
+                    Singleton.vm.mp.reset()
+                    Singleton.controller!!.navigate(Screens.Record.name)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -281,7 +265,7 @@ abstract class CountUpTimer protected constructor(private val duration: Long) :
     companion object {
         private const val INTERVAL_MS: Long = 1000
     }
-}@OptIn(ExperimentalMaterial3Api::class)
+}
 @Composable
 fun TimerDialog(
     onDismiss: () -> Unit
@@ -384,7 +368,7 @@ fun TrackCard(
                     horizontalArrangement = Arrangement.End
                 ) {
                     IconButton(
-                        onClick = { singleton.vm.play(sound, ctx) },
+                        onClick = { Singleton.vm.play(sound, ctx) },
                         modifier = modifier) {
                         Icon(
                             imageVector = Icons.Filled.PlayArrow,
@@ -397,8 +381,8 @@ fun TrackCard(
                         modifier = Modifier
                             .size(80.dp)
                             .clickable {
-                                if (singleton.vm.mp.isPlaying) {
-                                    singleton.vm.mp.pause()
+                                if (Singleton.vm.mp.isPlaying) {
+                                    Singleton.vm.mp.pause()
                                 }
                             })
                 }
@@ -412,7 +396,7 @@ fun TrackCard(
                         horizontalArrangement = Arrangement.End
                     ) {
                         IconButton(
-                            onClick = { singleton.vm.play(sound, ctx) },
+                            onClick = { Singleton.vm.play(sound, ctx) },
                             modifier = modifier) {
                             Icon(
                                 imageVector = Icons.Filled.PlayArrow,
@@ -425,21 +409,13 @@ fun TrackCard(
                             modifier = Modifier
                                 .size(80.dp)
                                 .clickable {
-                                    if (singleton.vm.mp.isPlaying) {
-                                        singleton.vm.mp.pause()
+                                    if (Singleton.vm.mp.isPlaying) {
+                                        Singleton.vm.mp.pause()
                                     }
                                 })
                     }
                     IconButton(
-                        onClick = {
-                            if (sound is Song) {
-                                editSong(sound)
-                                Log.d("onclick edit",sound.title)
-                                //vm.addSongToEditing(sound.title)
-
-
-                            }
-                        },
+                        onClick = { editSong(sound) },
                         modifier = Modifier
                     ) {
                         Icon(
