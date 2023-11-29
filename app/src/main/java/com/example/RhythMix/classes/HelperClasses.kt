@@ -28,5 +28,6 @@ data class Track(
  */
 data class Song(
     override var title: String,
-    var tracks: MutableList<Track> = mutableListOf()
+    var tracks: MutableList<Track> = mutableListOf(),
+    var tempo: Int = 60
 ): Sound(title, "song")

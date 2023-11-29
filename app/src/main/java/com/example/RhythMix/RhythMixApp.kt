@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
@@ -142,9 +143,14 @@ fun RhythMixTopBar(currentScreen: Screens) {
                         contentDescription = "Create"
                     )
                 }
+                IconButton(onClick = { Singleton.vm.editSong() }) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Expand"
+                    )
+                }
             }
             Screens.Record -> {
-
                 IconButton(onClick = {
                     showTimerDialog = true
                 }) {
@@ -349,9 +355,7 @@ fun TrackCard(
     modifier: Modifier,
     ctx: Context = LocalContext.current,
     editSong: (Song) -> Unit = {}) {
-    //val state by vm.state.collectAsState()
     Card(modifier = Modifiers.cardModifier) {
-
         Column(
             modifier = modifier
                 .fillMaxHeight()
@@ -423,7 +427,6 @@ fun TrackCard(
             }
         }
     }
-
 }
 
 
