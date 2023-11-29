@@ -201,12 +201,7 @@ fun RhythMixTopBar(currentScreen: Screens) {
             onDismiss = {
                 showTimerDialog = false
             },
-         //   onConfirm = {
-                //    userInput ->
 
-                // vm.playSoundMultipleTimes(userInput)
-
-          //  },
 
             )
     }

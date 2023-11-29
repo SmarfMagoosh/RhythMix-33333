@@ -11,5 +11,5 @@ fun EditScreen(
     modifier: Modifier
 ) {
     val state = singleton.vm.state.collectAsState()
-    Text(state.value.editing?.title ?: "hello")
+    Text(state.value.editing?.title ?: "none")
 }
