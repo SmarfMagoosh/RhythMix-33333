@@ -25,25 +25,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.RhythMix.Screens
 import com.example.RhythMix.classes.Song
-import com.example.RhythMix.singleton
+import com.example.RhythMix.Singleton
 
 @RequiresApi(34)
 @Composable
-fun HomeScreen(
-    modifier: Modifier,
-) {
+fun HomeScreen(modifier: Modifier, ) {
     when(LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            Row(
-                modifier = modifier.fillMaxWidth()
-            ) {
+            Row(modifier = modifier.fillMaxWidth()) {
                 LazyColumn(
                     modifier = modifier.fillMaxWidth(0.5F),
                     content = {
-                        items(singleton.vm.getSongs()) {
+                        items(Singleton.vm.getSongs()) {
                             TrackCard(sound = it, modifier = modifier, editSong = {
-                                singleton.vm.setSong(it)
-                                singleton.controller!!.navigate(Screens.Edit.name)
+                                Singleton.vm.setSong(it)
+                                Singleton.controller!!.navigate(Screens.Edit.name)
                             })
                         }
                     }
@@ -51,7 +47,7 @@ fun HomeScreen(
                 LazyColumn(
                     modifier = modifier.fillMaxWidth(),
                     content = {
-                        items(singleton.vm.getTracks()) {
+                        items(Singleton.vm.getTracks()) {
                             TrackCard(sound = it, modifier = modifier)
                         }
                     }
@@ -60,8 +56,8 @@ fun HomeScreen(
         }
         else -> {
             val viewingTracks = remember { mutableStateOf(false) }
-            val tracks = singleton.vm.getTracks()
-            val songs = singleton.vm.getSongs()
+            val tracks = Singleton.vm.getTracks()
+            val songs = Singleton.vm.getSongs()
             Column(modifier = modifier.fillMaxSize()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -84,9 +80,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .background(color = if (viewingTracks.value) Color.DarkGray else Color.Black)
                             .padding(horizontal = 0.dp, vertical = 20.dp)
-                            .clickable {
-                                viewingTracks.value = true
-                            }
+                            .clickable { viewingTracks.value = true }
                     )
                 }
                 LazyColumn(
@@ -97,8 +91,8 @@ fun HomeScreen(
                                 sound = it,
                                 modifier = modifier,
                                 editSong = if (it is Song) { {
-                                        singleton.vm.setSong(it)
-                                        singleton.controller!!.navigate(Screens.Edit.name)
+                                        Singleton.vm.setSong(it)
+                                        Singleton.controller!!.navigate(Screens.Edit.name)
                                     } } else { {} }
                             )
                         }
