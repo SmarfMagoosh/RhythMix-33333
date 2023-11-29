@@ -19,7 +19,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 
-data class State(var editing: Song? = null)
+data class State(
+    var editing: Song? = null,
+    var editSongSettings: Boolean = false
+)
 object Modifiers {
     val cardModifier: Modifier = Modifier
         .fillMaxWidth()
@@ -39,7 +42,13 @@ class RhythMixViewModel: ViewModel() {
         )
     }
     fun getSongs(): List<Song> = listOf(
-        Song("Reptilia", mutableListOf()),
+        Song("Reptilia", mutableListOf(
+            Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
+            Track("Bass", R.raw.billie_jean),
+            Track("Vocals", R.raw.boulevard_of_broken_dreams),
+            Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
+            Track("Vine Boom Sound Effect", R.raw.vine_boom)
+        )),
         Song("Yellow", mutableListOf()),
         Song("Black Betty", mutableListOf()),
         Song("Mississippi Queen", mutableListOf()),
@@ -66,6 +75,8 @@ class RhythMixViewModel: ViewModel() {
         }
     }
     fun setSong(song: Song) = _state.update { it.copy(editing = song) }
+
+    fun editSong() = _state.update { it.copy(editSongSettings = !_state.value.editSongSettings) }
     suspend fun playSoundMultipleTimes( timesToPlay: String) {
         withContext(Dispatchers.IO) {
             repeat(timesToPlay.toInt()) {
