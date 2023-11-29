@@ -2,6 +2,7 @@ package com.example.RhythMix
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.CountDownTimer
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -39,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -145,22 +147,39 @@ fun RhythMixTopBar(currentScreen: Screens) {
             }
             Screens.Record -> {
 
+                val custom1ImagePainter: Painter = painterResource(R.drawable.timer)
+
                 IconButton(onClick = {
-                    showTimerDialog = true
+
+                    showTimerDialog= true
                 }) {
-                    Icon(
-                        imageVector = Icons.Default.AddCircle,
-                        contentDescription = "Timer"
+
+                    Image(
+                        painter = custom1ImagePainter,
+                        contentDescription = "timer image",
+                        modifier = Modifier
+                            .size(20.dp)
                     )
                 }
+
+
+                val custom2ImagePainter: Painter = painterResource(R.drawable.triangle)
+
                 IconButton(onClick = {
-                    showDialog = true
+
+                    showDialog= true
                 }) {
-                    Icon(
-                        imageVector = Icons.Default.Warning,
-                        contentDescription = "Metronome"
+
+                    Image(
+                        painter = custom2ImagePainter,
+                        contentDescription = "metronome image",
+                        modifier = Modifier
+                            .size(27.dp)
+                            .padding(0.dp,5.dp,0.dp,0.dp)
                     )
                 }
+
+
             }
         }
         }
@@ -191,6 +210,7 @@ fun RhythMixTopBar(currentScreen: Screens) {
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MetronomeDialog(
@@ -199,8 +219,14 @@ fun MetronomeDialog(
 ) {
     var updateMetronomeText by remember { mutableStateOf("") }
     val mTimer: CountUpTimer = object : CountUpTimer(30000) {
+        private val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.metronomemp3)
         override fun onTick(second: Int) {
             updateMetronomeText = second.toString()
+            mediaPlayer.start()
+        }
+        override fun onFinish() {
+
+            mediaPlayer.release()
         }
     }
     AlertDialog(
@@ -210,6 +236,7 @@ fun MetronomeDialog(
         },
         text = {
             Text(updateMetronomeText )
+            Text("4/4 time")
         },
 
         confirmButton = {
@@ -224,6 +251,7 @@ fun MetronomeDialog(
             Button(
                 onClick = {
                     mTimer.cancel()
+                    mTimer.onFinish()
                 }
             ) {
                 Text("Stop")
