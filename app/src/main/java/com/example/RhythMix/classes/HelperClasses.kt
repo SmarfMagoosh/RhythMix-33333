@@ -3,7 +3,10 @@ package com.example.RhythMix.classes
 /**
  * A trivial parent class that just allows us to reuse code when making cards
  */
-open class Sound(open var title: String, open val type: String = "song")
+open class Sound(open var title: String, open val type: String = "song") {
+    val display: String
+        get() = if (title.length < 20) title else "${title.take(20)}..."
+}
 
 /**
  * A track represents one part of a song such as the vocals, the bassline, etc.
@@ -16,7 +19,7 @@ open class Sound(open var title: String, open val type: String = "song")
 data class Track(
     override var title: String,
     var id: Int,
-    var start: Long = 1000L,
+    var start: Int = 0,
     var loops: Int = 0,
     var volume: Float = 1F
 ): Sound(title, "track")

@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -147,11 +148,14 @@ fun RhythMixTopBar(currentScreen: Screens) {
                         contentDescription = "Create"
                     )
                 }
-                IconButton(onClick = { Singleton.vm.editSong() }) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Expand"
-                    )
+                when (Singleton.vm.state.collectAsState().value.editing) {
+                    null -> {}
+                    else -> IconButton(onClick = { Singleton.vm.editSong() }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Expand"
+                        )
+                    }
                 }
             }
             Screens.Record -> {
@@ -387,7 +391,7 @@ fun TrackCard(
                 .fillMaxHeight()
                 .padding(20.dp)
         ) {
-            Text(sound.title)
+            Text(sound.display)
             if (sound is Track) {
                 Row(
                     modifier = modifier.fillMaxWidth(0.2F),
