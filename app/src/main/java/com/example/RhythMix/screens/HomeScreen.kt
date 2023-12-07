@@ -29,7 +29,7 @@ import com.example.RhythMix.Singleton
 
 @RequiresApi(34)
 @Composable
-fun HomeScreen(modifier: Modifier, ) {
+fun HomeScreen(modifier: Modifier) {
     when(LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
             Row(modifier = modifier.fillMaxWidth()) {
@@ -84,7 +84,9 @@ fun HomeScreen(modifier: Modifier, ) {
                     )
                 }
                 LazyColumn(
-                    modifier = modifier.fillMaxWidth().padding(15.dp),
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(15.dp),
                     content = {
                         items(if (viewingTracks.value) tracks else songs) {
                             TrackCard(

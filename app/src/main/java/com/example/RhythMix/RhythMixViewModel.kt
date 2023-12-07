@@ -66,17 +66,12 @@ class RhythMixViewModel: ViewModel() {
         if (sound is Song) {
             // TODO launch coroutines :(
         } else if (sound is Track) {
-            mp.reset()
-            mp.setDataSource(ctx.resources.openRawResourceFd(sound.id))
-            mp.setVolume(sound.volume, sound.volume)
-            mp.prepare()
-            Thread.sleep(sound.start)
-            mp.start()
+            // TODO play stuff
         }
     }
     fun setSong(song: Song) = _state.update { it.copy(editing = song) }
-
     fun editSong() = _state.update { it.copy(editSongSettings = !_state.value.editSongSettings) }
+
     suspend fun playSoundMultipleTimes( timesToPlay: String) {
         withContext(Dispatchers.IO) {
             repeat(timesToPlay.toInt()) {
