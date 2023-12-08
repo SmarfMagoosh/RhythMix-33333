@@ -1,5 +1,7 @@
 package com.example.RhythMix.classes
 
+import com.example.RhythMix.Singleton
+
 /**
  * A trivial parent class that just allows us to reuse code when making cards
  */
