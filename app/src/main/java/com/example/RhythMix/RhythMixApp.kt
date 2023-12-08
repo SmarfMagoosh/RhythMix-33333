@@ -116,14 +116,16 @@ fun RhythMixTopBar(currentScreen: Screens) {
         actions = {when (currentScreen) {
             Screens.Home -> {
                 IconButton(onClick = {
-                    // TODO
+                    //get song title
                 }) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Create"
                     )
                 }
-                IconButton(onClick = { /* TODO */ }) {
+                IconButton(onClick = {
+                    //todo
+                }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete"
