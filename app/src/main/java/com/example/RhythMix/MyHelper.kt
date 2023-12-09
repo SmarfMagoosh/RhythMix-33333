@@ -14,7 +14,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     companion object {
         private const val DATABASE_NAME = "MusicLibrary.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 4
 
         private const val TABLE_NAME = "my_library"
         private const val COLUMN_ID = "_id"
@@ -58,7 +58,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             put(COLUMN_AUDIO, audioData)
         }
 
-        //writableDatabase.insert("Song", null, cv)
+
         val result = db.insert(TABLE_NAME, null, cv)
         Log.d("MyHelper", "added song to db")
         if (result == -1L) {
