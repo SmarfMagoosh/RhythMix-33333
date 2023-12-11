@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.RhythMix.CountUpTimer
 import com.example.RhythMix.MetronomeDialog
 import com.example.RhythMix.MyDatabaseHelper
@@ -75,8 +76,13 @@ fun RecordScreen(context: Context) {
 //                contentDescription = "Delete"
 //            )
 //        }
-
-        Text( text = "Recording Controls",)
+        Text( text = "Track Creation",
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp
+        )
+        Spacer(modifier = Modifier.height(60.dp))
+        Text( text = "Recording Controls")
+        Spacer(modifier = Modifier.height(16.dp))
         Column(){
             TextField(
                 value = recordingTitle,
@@ -90,7 +96,7 @@ fun RecordScreen(context: Context) {
                 label = { Text("Author") }
             )
         }
-
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 //you would change this to store externally
@@ -186,7 +192,7 @@ fun RecordScreen(context: Context) {
 //                   // myDB.addSong(testTitle, testAuthor, "-2" )
 //                   // val dbHelper = MyHelper(context)
 //                    //val database = dbHelper.writableDatabase
-//                    //dbHelper.addSong("Song Title", "Author", "Track")
+                  //  dbHelper.addSong("Song Title", "Author", "Track")
 //                    val audioData = audioFile?.readBytes()
 //
 //                    // Save the song details and audio data to the database

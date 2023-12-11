@@ -232,7 +232,7 @@ fun MetronomeDialog(
     onConfirm: (String) -> Unit
 ) {
     var updateMetronomeText by remember { mutableStateOf("") }
-    val mTimer: CountUpTimer = object : CountUpTimer(30000) {
+    val mTimer: CountUpTimer = object : CountUpTimer(300000) {
         private val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.metronomemp3)
         override fun onTick(second: Int) {
             updateMetronomeText = second.toString()

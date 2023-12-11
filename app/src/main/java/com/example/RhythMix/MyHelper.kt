@@ -48,7 +48,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     }
 
     fun addTrackWithAudioData(title: String, author: String, track: String, audioData: ByteArray) {
-        Log.d("MyHelper", "Adding song with audio data to db")
+        Log.d("MyHelper", "Adding track with audio data to db")
         val db = this.writableDatabase
        //al cv = ContentValues()
         val cv = ContentValues().apply {
@@ -60,11 +60,11 @@ class MyHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
 
         val result = db.insert(TABLE_NAME, null, cv)
-        Log.d("MyHelper", "added song to db")
+        Log.d("MyHelper", "added track to db")
         if (result == -1L) {
-            Toast.makeText(context, "Failed to add song with audio data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Failed to add track with audio data", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "Song with audio data added successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Track with audio data added successfully", Toast.LENGTH_SHORT).show()
         }
     }
 
