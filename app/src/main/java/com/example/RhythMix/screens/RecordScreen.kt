@@ -9,7 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +48,7 @@ import java.io.File
 import java.time.format.TextStyle
 
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordScreen(context: Context) {
     val recorder by lazy { AndroidAudioRecorder(context) }
@@ -53,23 +57,39 @@ fun RecordScreen(context: Context) {
     val cacheDir = context.cacheDir
 
     var showAddDialog by remember { mutableStateOf(false) }
+    var recordingTitle by remember { mutableStateOf("") }
+    var authorName by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Text(text = "Song Creation")
-        IconButton(onClick = {
-            showAddDialog = true;
+//        Text(text = "Song Creation")
+//        IconButton(onClick = {
+//            showAddDialog = true;
+//
+//        }) {
+//            Icon(
+//                imageVector = Icons.Default.Add,
+//                contentDescription = "Delete"
+//            )
+//        }
 
-        }) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Delete"
+        Text( text = "Recording Controls",)
+        Column(){
+            TextField(
+                value = recordingTitle,
+                onValueChange = { recordingTitle = it },
+                label = { Text("Recording Title") }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            TextField(
+                value = authorName,
+                onValueChange = { authorName = it },
+                label = { Text("Author") }
             )
         }
-        Text( text = "Recording Controls",)
 
         Button(
             onClick = {
@@ -82,13 +102,15 @@ fun RecordScreen(context: Context) {
             Text(text = "Start")
         }
         Button(onClick = { recorder.stop() }){
+            val dbHelper = MyHelper(context)
+            val database = dbHelper.writableDatabase
+
             // Convert audio file contents to byte array
             val audioData = audioFile?.readBytes()
 
             // Save the song details and audio data to the database
-            val dbHelper = MyHelper(context)
-            dbHelper.addSongWithAudioData("Song Title", "Author", "Track", audioData ?: byteArrayOf())
-            Text(text = "Stop")
+            dbHelper.addTrackWithAudioData(recordingTitle, authorName, "Track", audioData ?: byteArrayOf())
+            Text(text = "Save")
         }
         Button(onClick = { player.playFile(audioFile ?: return@Button) }){
             Text(text = "Play")
@@ -97,79 +119,85 @@ fun RecordScreen(context: Context) {
             Text(text = "End")
         }
     }
-    if(showAddDialog){
-        AddSongDialog(
-            onDismiss = {
-                showAddDialog = false
-            },
-            onConfirm = {
-                    userInput ->
-
-            },
-            context, audioFile
-            )
-    }
+//    if(showAddDialog){
+//        AddSongDialog(
+//            onDismiss = {
+//                showAddDialog = false
+//            },
+//            onConfirm = {
+//                    userInput ->
+//
+//            },
+//            context, audioFile
+//            )
+//    }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddSongDialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit,
-    context: Context,
-    audioFile: File?
-
-) {
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text("Song Creation")
-        },
-        text = {
-
-        },
-
-        confirmButton = {
-            Button(
-                onClick = {
-
-                }
-            ) {
-                Text("Start")
-            }
-
-
-            Button(
-                onClick = {
-                    onDismiss()
-                }
-            ) {
-                Text("Close")
-            }
-
-            Button(
-                onClick = {
-                   // var testTitle = "test"
-                    //var testAuthor = "name"
-                   // var testTrack = "track"
-
-                   // myDB.addSong(testTitle, testAuthor, "-2" )
-                   // val dbHelper = MyHelper(context)
-                    //val database = dbHelper.writableDatabase
-                    //dbHelper.addSong("Song Title", "Author", "Track")
-                    val audioData = audioFile?.readBytes()
-
-                    // Save the song details and audio data to the database
-                    val dbHelper = MyHelper(context)
-                    dbHelper.addSongWithAudioData("Song Title", "Author", "Track", audioData ?: byteArrayOf())
-
-                }
-            ) {
-                Text("Save")
-            }
-        }
-    )
-}
+////@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun AddSongDialog(
+//    onDismiss: () -> Unit,
+//    onConfirm: (String) -> Unit,
+//    context: Context,
+//    audioFile: File?
+//
+//) {
+//  //  var recordingTitle by remember { mutableStateOf("") }
+//    //var authorName by remember { mutableStateOf("") }
+//    AlertDialog(
+//        onDismissRequest = onDismiss,
+//        title = {
+//            Text("Save Recording")
+//        },
+//        text = {
+//            Column(){
+//                TextField(
+//                    value = recordingTitle,
+//                    onValueChange = { recordingTitle = it },
+//                    label = { Text("Recording Title") }
+//                )
+//                Spacer(modifier = Modifier.height(16.dp))
+//                TextField(
+//                    value = authorName,
+//                    onValueChange = { authorName = it },
+//                    label = { Text("Author") }
+//                )
+//            }
+//
+//        },
+//
+//        confirmButton = {
+//            Button(
+//                onClick = {
+//
+//                }
+//            ) {
+//                Text("Start")
+//            }
+//
+//
+//            Button(
+//                onClick = {
+//                   // var testTitle = "test"
+//                    //var testAuthor = "name"
+//                   // var testTrack = "track"
+//
+//                   // myDB.addSong(testTitle, testAuthor, "-2" )
+//                   // val dbHelper = MyHelper(context)
+//                    //val database = dbHelper.writableDatabase
+//                    //dbHelper.addSong("Song Title", "Author", "Track")
+//                    val audioData = audioFile?.readBytes()
+//
+//                    // Save the song details and audio data to the database
+//                    val dbHelper = MyHelper(context)
+//                    dbHelper.addSongWithAudioData(recordingTitle, authorName, "Track", audioData ?: byteArrayOf())
+//
+//                }
+//            ) {
+//                Text("Save")
+//            }
+//        }
+//    )
+//}
 

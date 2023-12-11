@@ -116,7 +116,8 @@ fun RhythMixTopBar(currentScreen: Screens) {
         actions = {when (currentScreen) {
             Screens.Home -> {
                 IconButton(onClick = {
-                    //get song title
+                    Singleton.vm.mp.reset()
+                    Singleton.controller!!.navigate(Screens.Record.name)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -245,11 +246,11 @@ fun MetronomeDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Metronome")
+            Text("Metronome 4/4 time")
         },
         text = {
             Text(updateMetronomeText )
-            Text("4/4 time")
+
         },
 
         confirmButton = {

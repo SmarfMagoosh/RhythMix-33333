@@ -47,7 +47,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         onCreate(db)
     }
 
-    fun addSongWithAudioData(title: String, author: String, track: String, audioData: ByteArray) {
+    fun addTrackWithAudioData(title: String, author: String, track: String, audioData: ByteArray) {
         Log.d("MyHelper", "Adding song with audio data to db")
         val db = this.writableDatabase
        //al cv = ContentValues()
