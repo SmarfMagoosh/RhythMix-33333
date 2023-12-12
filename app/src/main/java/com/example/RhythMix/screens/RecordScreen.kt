@@ -1,8 +1,10 @@
 package com.example.RhythMix.screens
 
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -34,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.example.RhythMix.CountUpTimer
 import com.example.RhythMix.MetronomeDialog
 import com.example.RhythMix.MyDatabaseHelper
@@ -123,6 +126,15 @@ fun RecordScreen(context: Context) {
         }
         Button(onClick = { player.stop() }){
             Text(text = "End")
+        }
+
+        Spacer(modifier = Modifier.height(40.dp))
+        Button(onClick = {
+            val url = "https://www.musictheory.net/"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(intent)
+        }){
+            Text(text = "Music Theory Tips")
         }
     }
 //    if(showAddDialog){
