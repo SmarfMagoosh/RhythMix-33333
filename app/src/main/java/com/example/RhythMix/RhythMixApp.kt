@@ -111,6 +111,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
 fun RhythMixTopBar(currentScreen: Screens) {
     var showDialog by remember { mutableStateOf(false) }
     var showTimerDialog by remember { mutableStateOf(false) }
+
     TopAppBar(
         title = { Text("RhythMix") },
         actions = {when (currentScreen) {

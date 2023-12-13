@@ -1,7 +1,5 @@
 package com.example.RhythMix.classes
 
-import com.example.RhythMix.Singleton
-
 /**
  * A trivial parent class that just allows us to reuse code when making cards
  */
@@ -17,13 +15,15 @@ open class Sound(open var title: String, open val type: String = "song") {
  * @property start the time at which the track should start playing in the song
  * @property loops the number of times which the track should be played once it starts
  * @property volume the volume at which this track should be played
+ * @param audioFile the sound made on record screen
  */
 data class Track(
     override var title: String,
     var id: Int,
     var start: Int = 0,
     var loops: Int = 0,
-    var volume: Float = 1F
+    var volume: Float = 1F,
+    var audioFile: ByteArray
 ): Sound(title, "track")
 
 /**
