@@ -1,6 +1,8 @@
 package com.example.RhythMix.screens
 
 import android.content.res.Configuration
+import android.content.Context
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,15 +23,18 @@ import com.example.RhythMix.TrackCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.RhythMix.MyHelper
 import com.example.RhythMix.Screens
 import com.example.RhythMix.classes.Song
 import com.example.RhythMix.Singleton
+import com.example.RhythMix.classes.Track
 
 @RequiresApi(34)
 @Composable
-fun HomeScreen(modifier: Modifier) {
+fun HomeScreen(context: Context, modifier: Modifier) {
     when(LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
             Row(modifier = modifier.fillMaxWidth()) {
@@ -49,6 +54,16 @@ fun HomeScreen(modifier: Modifier) {
                     content = {
                         items(Singleton.vm.getTracks()) {
                             TrackCard(sound = it, modifier = modifier)
+                        }
+                        val myHelper = MyHelper(context)
+
+                        // Call getAllTracks to retrieve the list of tracks
+                        val trackList: List<Track> = myHelper.getAllTracks()
+
+                        // Now you can use the trackList as needed
+                        for (track in trackList) {
+
+                            Log.d("message"," Title: ${track.title}, Start: ${track.start}, Loops: ${track.loops}, Volume: ${track.volume}")
                         }
                     }
                 )

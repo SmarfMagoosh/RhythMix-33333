@@ -94,7 +94,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
-                HomeScreen(modifier = modifier)
+                HomeScreen(context = LocalContext.current,modifier = modifier)
             }
             composable(route = Screens.Edit.name) {
                 EditScreen(modifier = modifier)

@@ -109,5 +109,28 @@ class MyHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         cursor.close()
         return trackList
     }
+    fun editTrack(trackId: Int, title: String, start: Int, loops: Int, volume: Float, audio: ByteArray) {
+        Log.d("MyHelper", "Editing track in db")
+
+        val db = this.writableDatabase
+        val cv = ContentValues().apply {
+            put(COLUMN_TITLE, title)
+            put(COLUMN_START, start)
+            put(COLUMN_LOOPS, loops)
+            put(COLUMN_VOLUME, volume)
+            put(COLUMN_AUDIO, audio)
+        }
+
+        val clause = "$COLUMN_ID = ?"
+        val args = arrayOf(trackId.toString())
+
+        val result = db.update(TABLE_NAME, cv, clause, args)
+
+        if (result == 0) {
+            Log.d("editTrack()", "No rows updated")
+        } else {
+            Log.d("editTrack()", "Updated track successfully")
+        }
+    }
 }
 
