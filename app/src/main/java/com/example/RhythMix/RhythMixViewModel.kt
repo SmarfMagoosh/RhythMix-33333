@@ -3,10 +3,14 @@ package com.example.RhythMix
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -46,17 +50,22 @@ class RhythMixViewModel: ViewModel() {
         )
     }
     fun getSongs(): List<Song> = listOf(
+        Song("Luck", mutableListOf(
+            Track("Bass", R.raw.bass, loops = 3),
+            Track("Riff", R.raw.riff),
+            Track("Vocals", R.raw.vocals),
+            Track("Drums", R.raw.drums, start = 16)
         Song("Drag Queen", mutableListOf(
-            //Track("Bass", R.raw.drag_queen_bass),
-          //  Track("Riff", R.raw.drag_queen_riff),
-           // Track("Harmony", R.raw.drag_queen_harmony)
+            Track("Bass", R.raw.drag_queen_bass),
+            Track("Riff", R.raw.drag_queen_riff),
+             Track("Harmony", R.raw.drag_queen_harmony)
         )),
         Song("Reptilia", mutableListOf(
-           // Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
-           // Track("Bass", R.raw.billie_jean),
-           // Track("Vocals", R.raw.boulevard_of_broken_dreams),
-           // Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
-           // Track("Vine Boom Sound Effect", R.raw.vine_boom)
+           Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
+           Track("Bass", R.raw.billie_jean),
+           Track("Vocals", R.raw.boulevard_of_broken_dreams),
+           Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
+           Track("Vine Boom Sound Effect", R.raw.vine_boom)
         )),
         Song("Yellow", mutableListOf()),
         Song("Black Betty", mutableListOf()),
@@ -65,35 +74,30 @@ class RhythMixViewModel: ViewModel() {
         Song("Not the Same Anymore", mutableListOf())
     )
     fun getTracks(): List<Track> = listOf(
-     //   Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
-       // Track("Bass", R.raw.billie_jean),
-      //  Track("Vocals", R.raw.boulevard_of_broken_dreams),
-       // Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
-       // Track("Vine Boom Sound Effect", R.raw.vine_boom)
+       Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
+       Track("Bass", R.raw.billie_jean),
+       Track("Vocals", R.raw.boulevard_of_broken_dreams),
+       Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
+       Track("Vine Boom Sound Effect", R.raw.vine_boom)
     )
-    fun play(sound: Sound, ctx: Context) {
+    fun play(sound: Sound, ctx: Context, players: List<MediaPlayer> = listOf()) {
         if (sound is Song) {
-            val players: MutableList<MediaPlayer> = mutableListOf()
-            for (track in sound.tracks) {
-                val trackPlayer = MediaPlayer()
-                trackPlayer.setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                trackPlayer.setDataSource(ctx.resources.openRawResourceFd(track.id))
-                trackPlayer.prepare()
-                players.add(trackPlayer)
-            }
-            val scope = CoroutineScope(Dispatchers.Main)
-            val pairs = sound.tracks.zip(players)
+            val pairs = players.zip(sound.tracks)
             viewModelScope.launch {
                 coroutineScope {
                     for (pair in pairs) {
-                        scope.launch {
-                            Thread.sleep(pair.first.start * 6000L / sound.tempo)
-                            pair.second.start()
+                        Singleton.scope.launch {
+                            val mspb: Double = (sound.tempo * 50.0 / 3.0)
+                            val sleep = (pair.second.start * mspb).toLong()
+                            Thread.sleep(sleep)
+                            var cntr = 0
+                            pair.first.setOnCompletionListener {
+                                cntr++
+                                if (cntr < pair.second.loops) {
+                                    it.start()
+                                }
+                            }
+                            pair.first.start()
                         }
                     }
                 }
@@ -107,14 +111,5 @@ class RhythMixViewModel: ViewModel() {
     }
     fun setSong(song: Song) = _state.update { it.copy(editing = song) }
     fun editSong() = _state.update { it.copy(editSongSettings = !_state.value.editSongSettings) }
-
-    suspend fun playSoundMultipleTimes( timesToPlay: String) {
-        withContext(Dispatchers.IO) {
-            repeat(timesToPlay.toInt()) {
-             //   play(sound, ctx)
-                delay(1000) // Adjust the delay based on your requirements
-            }
-        }
-    }
 }
 
