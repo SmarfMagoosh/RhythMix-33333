@@ -55,6 +55,17 @@ class RhythMixViewModel: ViewModel() {
             Track("Riff", R.raw.riff),
             Track("Vocals", R.raw.vocals),
             Track("Drums", R.raw.drums, start = 16)
+        Song("Drag Queen", mutableListOf(
+            Track("Bass", R.raw.drag_queen_bass),
+            Track("Riff", R.raw.drag_queen_riff),
+             Track("Harmony", R.raw.drag_queen_harmony)
+        )),
+        Song("Reptilia", mutableListOf(
+           Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
+           Track("Bass", R.raw.billie_jean),
+           Track("Vocals", R.raw.boulevard_of_broken_dreams),
+           Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
+           Track("Vine Boom Sound Effect", R.raw.vine_boom)
         )),
         Song("Yellow", mutableListOf()),
         Song("Black Betty", mutableListOf()),
@@ -63,11 +74,11 @@ class RhythMixViewModel: ViewModel() {
         Song("Not the Same Anymore", mutableListOf())
     )
     fun getTracks(): List<Track> = listOf(
-        Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
-        Track("Bass", R.raw.billie_jean),
-        Track("Vocals", R.raw.boulevard_of_broken_dreams),
-        Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
-        Track("Vine Boom Sound Effect", R.raw.vine_boom)
+       Track("The Sickest Riff Known to Mankind", R.raw.sweet_child_of_mine),
+       Track("Bass", R.raw.billie_jean),
+       Track("Vocals", R.raw.boulevard_of_broken_dreams),
+       Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
+       Track("Vine Boom Sound Effect", R.raw.vine_boom)
     )
     fun play(sound: Sound, ctx: Context, players: List<MediaPlayer> = listOf()) {
         if (sound is Song) {

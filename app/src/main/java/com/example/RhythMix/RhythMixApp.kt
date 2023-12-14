@@ -97,7 +97,7 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
             startDestination = Screens.Home.name,
             modifier = modifier.padding(it)) {
             composable(route = Screens.Home.name) {
-                HomeScreen(modifier = modifier)
+                HomeScreen(context = LocalContext.current,modifier = modifier)
             }
             composable(route = Screens.Edit.name) {
                 EditScreen(modifier = modifier)
@@ -114,12 +114,14 @@ fun RhythMixApp(modifier: Modifier = Modifier) {
 fun RhythMixTopBar(currentScreen: Screens) {
     var showDialog by remember { mutableStateOf(false) }
     var showTimerDialog by remember { mutableStateOf(false) }
+
     TopAppBar(
         title = { Text("RhythMix") },
         actions = {when (currentScreen) {
             Screens.Home -> {
                 IconButton(onClick = {
-                    //get song title
+                    Singleton.vm.mp.reset()
+                    Singleton.controller!!.navigate(Screens.Record.name)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -163,35 +165,21 @@ fun RhythMixTopBar(currentScreen: Screens) {
             }
             Screens.Record -> {
 
-                val custom1ImagePainter: Painter = painterResource(R.drawable.timer)
-
                 IconButton(onClick = {
-
-                    showTimerDialog= true
+                    Singleton.vm.mp.reset()
+                    Singleton.controller!!.navigate(Screens.Record.name)
                 }) {
-
-                    Image(
-                        painter = custom1ImagePainter,
-                        contentDescription = "timer image",
-                        modifier = Modifier
-                            .size(20.dp)
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Delete"
                     )
                 }
 
 
-                val custom2ImagePainter: Painter = painterResource(R.drawable.triangle)
-
-                IconButton(onClick = {
-
-                    showDialog= true
-                }) {
-
-                    Image(
-                        painter = custom2ImagePainter,
-                        contentDescription = "metronome image",
-                        modifier = Modifier
-                            .size(27.dp)
-                            .padding(0.dp,5.dp,0.dp,0.dp)
+                IconButton(onClick = { /* Handle icon click */ }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Create"
                     )
                 }
 
@@ -201,153 +189,10 @@ fun RhythMixTopBar(currentScreen: Screens) {
         }
 
     )
-    if (showDialog) {
-        MetronomeDialog(
-            onDismiss = {
-                showDialog = false
-            },
-            onConfirm = {
-                    userInput ->
-
-               // vm.playSoundMultipleTimes(userInput)
-
-            },
-
-        )
-    }
-    if (showTimerDialog) {
-        TimerDialog(
-            onDismiss = {
-                showTimerDialog = false
-            },
 
 
-            )
-    }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MetronomeDialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var updateMetronomeText by remember { mutableStateOf("") }
-    val mTimer: CountUpTimer = object : CountUpTimer(30000) {
-        private val mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.metronomemp3)
-        override fun onTick(second: Int) {
-            updateMetronomeText = second.toString()
-            mediaPlayer.start()
-        }
-        override fun onFinish() {
-
-            mediaPlayer.release()
-        }
-    }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text("Metronome")
-        },
-        text = {
-            Text(updateMetronomeText )
-            Text("4/4 time")
-        },
-
-        confirmButton = {
-            Button(
-                onClick = {
-                    mTimer.start()
-                }
-            ) {
-                Text("Start")
-            }
-
-            Button(
-                onClick = {
-                    mTimer.cancel()
-                    mTimer.onFinish()
-                }
-            ) {
-                Text("Stop")
-            }
-
-            Button(
-                onClick = {
-                    onDismiss()
-                }
-            ) {
-                Text("Close")
-            }
-
-        }
-    )
-}
-
-abstract class CountUpTimer protected constructor(private val duration: Long) :
-    CountDownTimer(duration, INTERVAL_MS) {
-    abstract fun onTick(second: Int)
-    override fun onTick(msUntilFinished: Long) {
-        val second = ((duration - msUntilFinished) / 1000).toInt()
-        onTick(second)
-    }
-
-    override fun onFinish() {
-        onTick(duration / 1000)
-    }
-
-    companion object {
-        private const val INTERVAL_MS: Long = 1000
-    }
-}
-@Composable
-fun TimerDialog(
-    onDismiss: () -> Unit
-) {
-    var updateTimerText by remember { mutableStateOf("") }
-    val timer: CountUpTimer = object : CountUpTimer(30000) {
-        override fun onTick(second: Int) {
-            updateTimerText = second.toString()
-        }
-    }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text("Timer in Seconds")
-        },
-        text = {
-            Text(updateTimerText )
-        },
-
-        confirmButton = {
-            Button(
-                onClick = {
-                    timer.start()
-                }
-            ) {
-                Text("Start")
-            }
-
-            Button(
-                onClick = {
-                    timer.cancel()
-                }
-            ) {
-                Text("Stop")
-            }
-
-            Button(
-                onClick = {
-                    onDismiss()
-                }
-            ) {
-                Text("Close")
-            }
-
-        }
-    )
-}
 @Composable
 fun RhythMixBottomBar(modifier: Modifier, homeClick: () -> Unit, editClick: () -> Unit, recordClick: () -> Unit) {
     BottomAppBar{
