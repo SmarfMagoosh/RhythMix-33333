@@ -57,12 +57,15 @@ import com.example.RhythMix.classes.Track
 import com.example.RhythMix.screens.EditScreen
 import com.example.RhythMix.screens.HomeScreen
 import com.example.RhythMix.screens.RecordScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 enum class Screens { Home, Edit, Record }
 object Singleton {
     val vm: RhythMixViewModel = RhythMixViewModel()
     @SuppressLint("StaticFieldLeak")
     var controller: NavHostController? = null
+    val scope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 }
 @RequiresApi(34)
 @OptIn(ExperimentalMaterial3Api::class)

@@ -69,30 +69,16 @@ class RhythMixViewModel: ViewModel() {
         Track("Saxophone Solo that Goes Crazy", R.raw.careless_whisper),
         Track("Vine Boom Sound Effect", R.raw.vine_boom)
     )
-    fun play(sound: Sound, ctx: Context) {
+    fun play(sound: Sound, ctx: Context, players: List<MediaPlayer> = listOf()) {
         if (sound is Song) {
-            val scope = CoroutineScope(Dispatchers.Main)
-            val pairs = (0 until sound.tracks.size).map {
-                val tp = MediaPlayer()
-                tp.setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                tp.setDataSource(ctx.resources.openRawResourceFd(sound.tracks[it].id))
-                tp.prepare()
-                tp.setOnCompletionListener {
-
-                }
-                return@map Pair(tp, sound.tracks[it])
-            }
+            val pairs = players.zip(sound.tracks)
             viewModelScope.launch {
                 coroutineScope {
                     for (pair in pairs) {
-                        launch {
+                        Singleton.scope.launch {
                             val mspb: Double = (sound.tempo * 50.0 / 3.0)
-                            Thread.sleep((pair.second.start * mspb).toLong())
+                            val sleep = (pair.second.start * mspb).toLong()
+                            Thread.sleep(sleep)
                             var cntr = 0
                             pair.first.setOnCompletionListener {
                                 cntr++
@@ -114,14 +100,5 @@ class RhythMixViewModel: ViewModel() {
     }
     fun setSong(song: Song) = _state.update { it.copy(editing = song) }
     fun editSong() = _state.update { it.copy(editSongSettings = !_state.value.editSongSettings) }
-
-    suspend fun playSoundMultipleTimes( timesToPlay: String) {
-        withContext(Dispatchers.IO) {
-            repeat(timesToPlay.toInt()) {
-             //   play(sound, ctx)
-                delay(1000) // Adjust the delay based on your requirements
-            }
-        }
-    }
 }
 

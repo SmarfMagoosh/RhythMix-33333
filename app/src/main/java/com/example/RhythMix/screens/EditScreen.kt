@@ -2,6 +2,9 @@ package com.example.RhythMix.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,6 +56,7 @@ import com.example.RhythMix.Singleton
 import com.example.RhythMix.classes.Song
 import com.example.RhythMix.classes.Sound
 import com.example.RhythMix.classes.Track
+import kotlinx.coroutines.cancel
 import java.lang.Integer.parseInt
 import kotlin.math.floor
 
@@ -82,6 +86,19 @@ fun EditScreen(modifier: Modifier) {
     }
     else {
         val song = state.editing!!
+        val ctx = LocalContext.current
+        val players = (0 until song.tracks.size).map {
+            val tp = MediaPlayer()
+            tp.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+            tp.setDataSource(ctx.resources.openRawResourceFd(song.tracks[it].id))
+            tp.prepare()
+            return@map tp
+        }
         if (state.editSongSettings) {
             SongSettingsMenu(modifier = modifier, song = song)
         } else {
@@ -97,6 +114,21 @@ fun EditScreen(modifier: Modifier) {
                         text = song.display,
                         fontSize = TextUnit(5F, TextUnitType.Em)
                     )
+                    IconButton(onClick = { Singleton.vm.play(song, ctx, players) }) {
+                        Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = null)
+                    }
+                    IconButton(onClick = {
+                        Singleton.scope.cancel()
+                        Log.d("coroute", "trying to pause")
+                        for (i in 0 until song.tracks.size) {
+                            players[i].pause()
+                            players[i].reset()
+                            players[i].setDataSource(ctx.resources.openRawResourceFd(song.tracks[i].id))
+                            players[i].prepare()
+                        }
+                    }) {
+                        Icon(painterResource(id = R.drawable.pausebutton), contentDescription = null)
+                    }
                     Button(onClick = { popup = true }) {
                         Text(text = "Switch Song")
                     }
@@ -107,7 +139,7 @@ fun EditScreen(modifier: Modifier) {
                         .padding(15.dp),
                     content = {
                         items(song.tracks) {
-                            EditableTrackCard(sound = it, modifier = modifier, onEdit = { currTrack = it })
+                            EditableTrackCard(sound = it, modifier = modifier, onEdit = { currTrack = it }, players = players)
                         }
                     })
             }
@@ -211,7 +243,12 @@ fun EditScreen(modifier: Modifier) {
     }
 }
 @Composable
-fun EditableTrackCard(sound: Sound, modifier: Modifier, ctx: Context = LocalContext.current, onEdit: () -> Unit) {
+fun EditableTrackCard(
+    sound: Sound,
+    modifier: Modifier,
+    ctx: Context = LocalContext.current,
+    onEdit: () -> Unit,
+    players: List<MediaPlayer>) {
     Card(modifier = Modifiers.cardModifier) {
         Column(
             modifier = modifier
@@ -225,7 +262,7 @@ fun EditableTrackCard(sound: Sound, modifier: Modifier, ctx: Context = LocalCont
                         modifier = modifier.fillMaxWidth(0.2F),
                         horizontalArrangement = Arrangement.End) {
                         IconButton(
-                            onClick = { Singleton.vm.play(sound, ctx) },
+                            onClick = { Singleton.vm.play(sound, ctx, players) },
                             modifier = modifier) {
                             Icon(
                                 imageVector = Icons.Filled.PlayArrow,
